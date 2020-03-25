@@ -2,5 +2,6 @@ language: generic
 
 script:
     - cd FlightInfoCC
+    - npm install
     - npm test
     - cd ..
