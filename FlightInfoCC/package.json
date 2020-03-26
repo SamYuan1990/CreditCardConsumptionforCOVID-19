@@ -17,6 +17,7 @@
   "author": "John Doe",
   "license": "Apache-2.0",
   "dependencies": {
+    "date-utils": "^1.2.21",
     "fabric-contract-api": "^1.4.5",
     "fabric-shim": "^1.4.5"
   },
@@ -42,9 +43,9 @@
     ],
     "all": true,
     "check-coverage": true,
-    "statements": 100,
-    "branches": 100,
+    "statements": 70,
+    "branches": 70,
     "functions": 100,
-    "lines": 100
+    "lines": 70
   }
 }
