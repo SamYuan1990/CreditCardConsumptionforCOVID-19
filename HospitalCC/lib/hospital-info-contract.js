@@ -35,7 +35,7 @@ class HospitalInfoContract extends Contract {
     async createPatientInfo(ctx,CaseID,PatientInfo){
         const buffer = Buffer.from(PatientInfo);
         console.log('create:'+PatientInfo);
-        await ctx.stub.putState(PatientInfo, buffer);
+        await ctx.stub.putState(CaseID, buffer);
     }
 
     async SearchRecentPatients(ctx,Virus,day){
