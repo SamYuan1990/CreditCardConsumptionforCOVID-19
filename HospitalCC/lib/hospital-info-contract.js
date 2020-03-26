@@ -16,6 +16,7 @@ class HospitalInfoContract extends Contract {
         let loop = true;
         while (loop) {
             const res = await iterator.next();
+            console.log('current iterator '+JSON.stringify(res));
             if (!res.value && res.done) {
                 await iterator.close();
                 return allResults;
@@ -32,10 +33,11 @@ class HospitalInfoContract extends Contract {
         }
     }
 
-    async createPatientInfo(ctx,CaseID,PatientInfo){
+
+    async createPatientInfo(ctx,CaseNo,PatientInfo){
         const buffer = Buffer.from(PatientInfo);
-        console.log('create:'+PatientInfo);
-        await ctx.stub.putState(CaseID, buffer);
+        console.log('create '+ JSON.stringify(PatientInfo));
+        await ctx.stub.putState(CaseNo, buffer);
     }
 
     async SearchRecentPatients(ctx,Virus,day){
@@ -52,11 +54,12 @@ class HospitalInfoContract extends Contract {
             queryString.selector.Virus = Virus;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
-            console.log('query:'+queryString);
-            iterator = await ctx.stub.getQueryResult(queryString);
+            console.log('query '+ JSON.stringify(queryString));
+            iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
             if(!iterator){
                 continue;
             }
+            console.log('find data'+iterator);
             results=results.concat(await this.getAllResults(iterator));
             date.setDate(date.getDate()-1);
         }
@@ -71,11 +74,12 @@ class HospitalInfoContract extends Contract {
         let queryString = {};
         queryString.selector = {};
         queryString.selector.Virus = Virus;
-        console.log('query:'+queryString);
-        const iterator = await ctx.stub.getQueryResult(queryString);
+        console.log('query '+ JSON.stringify(queryString));
+        const iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         if(!iterator){
             return JSON.stringify(results);
         }
+        console.log('find data'+iterator);
         results = await this.getAllResults(iterator);
         return JSON.stringify(results);
     }
