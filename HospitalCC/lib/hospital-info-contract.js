@@ -33,6 +33,7 @@ class HospitalInfoContract extends Contract {
         }
     }
 
+
     async createPatientInfo(ctx,CaseNo,PatientInfo){
         const buffer = Buffer.from(PatientInfo);
         console.log('create '+ JSON.stringify(PatientInfo));
