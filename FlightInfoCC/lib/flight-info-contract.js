@@ -5,52 +5,82 @@
 'use strict';
 
 const { Contract } = require('fabric-contract-api');
-
+require('date-utils');
+/*
+{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}
+*/
 class FlightInfoContract extends Contract {
 
-    async flightInfoExists(ctx, flightInfoId) {
-        const buffer = await ctx.stub.getState(flightInfoId);
-        return (!!buffer && buffer.length > 0);
-    }
-
-    async createFlightInfo(ctx, flightInfoId, value) {
-        const exists = await this.flightInfoExists(ctx, flightInfoId);
-        if (exists) {
-            throw new Error(`The flight info ${flightInfoId} already exists`);
+    async getAllResults(iterator, getKeys) {
+        const allResults = [];
+        let loop = true;
+        while (loop) {
+            const res = await iterator.next();
+            if (!res.value && res.done) {
+                await iterator.close();
+                return allResults;
+            } else if (!res.value) {
+                throw new Error('no value and not done (internal error?)');
+            }
+            const theVal = (getKeys) ? res.value.key : res.value.value.toString('utf8');
+            allResults.push(JSON.parse(theVal));
+            if (res.done) {
+                await iterator.close();
+                loop = false;
+                return allResults;
+            }
         }
-        const asset = { value };
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(flightInfoId, buffer);
     }
 
-    async readFlightInfo(ctx, flightInfoId) {
-        const exists = await this.flightInfoExists(ctx, flightInfoId);
-        if (!exists) {
-            throw new Error(`The flight info ${flightInfoId} does not exist`);
+    async createFlightInfo(ctx,flightNo,flightInfo){
+        const buffer = Buffer.from(flightInfo);
+        await ctx.stub.putState(flightNo, buffer);
+    }
+
+    async SearchRecentFlight(ctx,personID,day){
+        let Flights = [];
+        let results = [];
+        let date = new Date();
+        let iterator;
+        let i;
+        let queryday;
+        let queryString;
+        for (i=0;i<day;i++){
+            queryString = {};
+            queryString.selector = {};
+            queryString.selector.Passengers = personID;
+            queryday = date.toFormat('YYYY-MM-DD');
+            queryString.selector.Date = queryday;
+            iterator = await ctx.stub.getQueryResult(queryString);
+            if(!iterator){
+                continue;
+            }
+            results=results.concat(await this.getAllResults(iterator));
+            date.setDate(date.getDate()-1);
         }
-        const buffer = await ctx.stub.getState(flightInfoId);
-        const asset = JSON.parse(buffer.toString());
-        return asset;
-    }
-
-    async updateFlightInfo(ctx, flightInfoId, newValue) {
-        const exists = await this.flightInfoExists(ctx, flightInfoId);
-        if (!exists) {
-            throw new Error(`The flight info ${flightInfoId} does not exist`);
+        for(i=0;i<results.length;i++){
+            Flights[i] = results[i].ID;
         }
-        const asset = { value: newValue };
-        const buffer = Buffer.from(JSON.stringify(asset));
-        await ctx.stub.putState(flightInfoId, buffer);
+        return JSON.stringify(Flights);
     }
 
-    async deleteFlightInfo(ctx, flightInfoId) {
-        const exists = await this.flightInfoExists(ctx, flightInfoId);
-        if (!exists) {
-            throw new Error(`The flight info ${flightInfoId} does not exist`);
+    async GetPassengers(ctx,flightID){
+        let results =[];
+        let Passengers = [];
+        let queryString = {};
+        let i;
+        queryString.selector = {};
+        queryString.selector.ID = flightID;
+        const iterator = await ctx.stub.getQueryResult(queryString);
+        if(!iterator){
+            return JSON.stringify(results);
         }
-        await ctx.stub.deleteState(flightInfoId);
+        results = await this.getAllResults(iterator);
+        for(i=0;i<results.length;i++){
+            Passengers[i] = results[i].Passengers;
+        }
+        return JSON.stringify(Passengers);
     }
-
 }
 
 module.exports = FlightInfoContract;

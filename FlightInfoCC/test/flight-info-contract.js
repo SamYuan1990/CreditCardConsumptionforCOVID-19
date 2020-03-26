@@ -12,10 +12,33 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+require('date-utils');
 
 chai.should();
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
+
+function createIterator(items) {
+    let i =0;
+    return {
+        next() {
+            let done = (i >= items.length);
+            let value = {};
+            if(!done){
+                value.value=items[i++];
+            } else{
+                value = undefined;
+            }
+            return {
+                done,
+                value
+            };
+        },
+        close(){
+
+        }
+    };
+}
 
 class TestContext {
 
@@ -38,71 +61,93 @@ describe('FlightInfoContract', () => {
     beforeEach(() => {
         contract = new FlightInfoContract();
         ctx = new TestContext();
-        ctx.stub.getState.withArgs('1001').resolves(Buffer.from('{"value":"flight info 1001 value"}'));
-        ctx.stub.getState.withArgs('1002').resolves(Buffer.from('{"value":"flight info 1002 value"}'));
     });
 
-    describe('#flightInfoExists', () => {
-
-        it('should return true for a flight info', async () => {
-            await contract.flightInfoExists(ctx, '1001').should.eventually.be.true;
-        });
-
-        it('should return false for a flight info that does not exist', async () => {
-            await contract.flightInfoExists(ctx, '1003').should.eventually.be.false;
-        });
-
-    });
-
-    describe('#createFlightInfo', () => {
+    describe('#Create New flight Info', ()=>{
 
         it('should create a flight info', async () => {
-            await contract.createFlightInfo(ctx, '1003', 'flight info 1003 value');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('1003', Buffer.from('{"value":"flight info 1003 value"}'));
+            await contract.createFlightInfo(ctx,'F001_P0001','{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('F001_P0001',Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}'));
         });
 
-        it('should throw an error for a flight info that already exists', async () => {
-            await contract.createFlightInfo(ctx, '1001', 'myvalue').should.be.rejectedWith(/The flight info 1001 already exists/);
-        });
 
+        it('should create a flight info for another', async () => {
+            await contract.createFlightInfo(ctx,'F001_P0002','{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0002"}');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('F001_P0002',Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0002"}'));
+        });
     });
 
-    describe('#readFlightInfo', () => {
-
-        it('should return a flight info', async () => {
-            await contract.readFlightInfo(ctx, '1001').should.eventually.deep.equal({ value: 'flight info 1001 value' });
+    describe('#Search Recent Flight taken by PersonID and Date', ()=>{
+        it('should return', async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.Passengers = 'P0001';
+            queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+                createIterator([
+                    Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
+                ]));
+            await contract.SearchRecentFlight(ctx,'P0001',5).should.eventually.deep.equal(JSON.stringify(['F001']));
         });
 
-        it('should throw an error for a flight info that does not exist', async () => {
-            await contract.readFlightInfo(ctx, '1003').should.be.rejectedWith(/The flight info 1003 does not exist/);
+        it('should return many', async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.Passengers = 'P0001';
+            queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+                createIterator([
+                    Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
+                ]));
+            let queryString2 = {};
+            queryString2.selector = {};
+            queryString2.selector.Passengers = 'P0001';
+            queryString2.selector.Date = new Date(new Date().setDate(new Date().getDate() - 1)).toFormat('YYYY-MM-DD');
+            ctx.stub.getQueryResult.withArgs(queryString2).resolves(
+                createIterator([
+                    Buffer.from('{"ID":"F002","From":"BJ","To":"NY","Date":"2020-03-24","Passengers":"P0001"}')
+                ]));
+            await contract.SearchRecentFlight(ctx,'P0001',5).should.eventually.deep.equal(JSON.stringify(['F001','F002']));
         });
 
+        it('Not found',async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.Passengers = 'P0001';
+            queryString.selector.Date = new Date().toFormat('yyyy-MM-dd');
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(createIterator([]));
+            await contract.SearchRecentFlight(ctx,'P0003',5).should.eventually.deep.equal(JSON.stringify([]));
+        });
     });
 
-    describe('#updateFlightInfo', () => {
-
-        it('should update a flight info', async () => {
-            await contract.updateFlightInfo(ctx, '1001', 'flight info 1001 new value');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('1001', Buffer.from('{"value":"flight info 1001 new value"}'));
+    describe('#Search Passenger list via Flight', ()=>{
+        it('found return one', async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.ID = 'F001';
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+                createIterator([
+                    Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
+                ]));
+            await contract.GetPassengers(ctx,'F001').should.eventually.deep.equal(JSON.stringify(['P0001']));
         });
 
-        it('should throw an error for a flight info that does not exist', async () => {
-            await contract.updateFlightInfo(ctx, '1003', 'flight info 1003 new value').should.be.rejectedWith(/The flight info 1003 does not exist/);
+        it('found return many', async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.ID = 'F001';
+            const data = createIterator([Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}'),Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0002"}')]);
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(data);
+            await contract.GetPassengers(ctx,'F001').should.eventually.deep.equal(JSON.stringify(['P0001','P0002']));
         });
 
-    });
-
-    describe('#deleteFlightInfo', () => {
-
-        it('should delete a flight info', async () => {
-            await contract.deleteFlightInfo(ctx, '1001');
-            ctx.stub.deleteState.should.have.been.calledOnceWithExactly('1001');
+        it('Not found', async () => {
+            let queryString = {};
+            queryString.selector = {};
+            queryString.selector.ID = 'F001';
+            ctx.stub.getQueryResult.withArgs(queryString).resolves(createIterator([]));
+            await contract.GetPassengers(ctx,'F001').should.eventually.deep.equal(JSON.stringify([]));
         });
-
-        it('should throw an error for a flight info that does not exist', async () => {
-            await contract.deleteFlightInfo(ctx, '1003').should.be.rejectedWith(/The flight info 1003 does not exist/);
-        });
-
     });
 
 });
