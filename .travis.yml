@@ -1,5 +1,7 @@
 language: generic
 
+service: docker
+
 script:
     - cd FlightInfoCC
     - npm install
@@ -9,3 +11,22 @@ script:
     - npm install
     - npm test
     - cd ..
+    - cd blockchaine2e
+    - git submodule init
+    - cd fabric-samples
+    - git checkout v1.4.4
+    - curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./scripts/bootstrap.sh
+    - chmod +x ./scripts/bootstrap.sh
+    - ./scripts/bootstrap.sh 1.4.4 1.4.4 1.4.4
+    - cd ..
+    - cp ./byfn.sh ./fabric-samples/first-network
+    - cd fabric-samples/first-network
+    - ./byfn.sh up -n -i 1.4.4
+    - cd ../..
+    - docker cp myscript.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    - cd ..
+    - docker cp FlightInfoCC cli:/opt/gopath/src/github.com/chaincode/
+    - docker cp HospitalCC cli:/opt/gopath/src/github.com/chaincode/
+    - docker exec cli scripts/myscript.sh
+
+    

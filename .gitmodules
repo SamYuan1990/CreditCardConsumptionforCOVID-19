@@ -1,0 +1,3 @@
+[submodule "blockchaine2e/fabric-samples"]
+	path = blockchaine2e/fabric-samples
+	url = https://github.com/hyperledger/fabric-samples.git
