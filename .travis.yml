@@ -4,17 +4,17 @@ service: docker
 
 jobs:
   include:
-    - stage: Blockchain_UT
+    - stage: TEST
       script: 
             - cd FlightInfoCC
             - npm install
             - npm test
-            - cd ..
+    - stage: TEST
+      script: 
             - cd HospitalCC
             - npm install
             - npm test
-            - cd ..
-    - stage: Blockchain_E2E
+    - stage: TEST
       script: 
             - cd blockchaine2e
             - git submodule init
@@ -23,13 +23,40 @@ jobs:
             - curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./scripts/bootstrap.sh
             - chmod +x ./scripts/bootstrap.sh
             - ./scripts/bootstrap.sh 1.4.4 1.4.4 1.4.4
+            #- docker pull hyperledger/fabric-couchdb:0.4.16
+            #- docker tag hyperledger/fabric-couchdb:0.4.16 hyperledger/fabric-couchdb:latest
             - cd ..
             - cp ./byfn.sh ./fabric-samples/first-network
             - cd fabric-samples/first-network
-            - ./byfn.sh up -n -i 1.4.4
+            - ./byfn.sh up -n -i 1.4.4 -s couchdb
             - cd ../..
-            - docker cp myscript.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+            - docker cp myscriptFlight.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
             - cd ..
             - docker cp FlightInfoCC cli:/opt/gopath/src/github.com/chaincode/
+            - docker exec cli scripts/myscriptFlight.sh    
+            - docker ps
+            - docker logs dev-peer0.org1.example.com-FlightInfoCC-1.0
+            - docker logs peer0.org1.example.com
+    - stage: TEST
+      script: 
+            - cd blockchaine2e
+            - git submodule init
+            - cd fabric-samples
+            - git checkout v1.4.4
+            - curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./scripts/bootstrap.sh
+            - chmod +x ./scripts/bootstrap.sh
+            - ./scripts/bootstrap.sh 1.4.4 1.4.4 1.4.4
+            #- docker pull hyperledger/fabric-couchdb:0.4.16
+            #- docker tag hyperledger/fabric-couchdb:0.4.16 hyperledger/fabric-couchdb:latest
+            - cd ..
+            - cp ./byfn.sh ./fabric-samples/first-network
+            - cd fabric-samples/first-network
+            - ./byfn.sh up -n -i 1.4.4 -s couchdb
+            - cd ../..
+            - docker cp myscripHospital.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+            - cd ..
             - docker cp HospitalCC cli:/opt/gopath/src/github.com/chaincode/
-            - docker exec cli scripts/myscript.sh    
+            - docker exec cli scripts/myscripHospital.sh    
+            - docker ps
+            - docker logs dev-peer0.org1.example.com-HospitalCC-1.0
+            - docker logs peer0.org1.example.com

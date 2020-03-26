@@ -16,6 +16,7 @@ class FlightInfoContract extends Contract {
         let loop = true;
         while (loop) {
             const res = await iterator.next();
+            console.log('current iterator '+JSON.stringify(res));
             if (!res.value && res.done) {
                 await iterator.close();
                 return allResults;
@@ -34,6 +35,7 @@ class FlightInfoContract extends Contract {
 
     async createFlightInfo(ctx,flightNo,flightInfo){
         const buffer = Buffer.from(flightInfo);
+        console.log('create flight info '+buffer);
         await ctx.stub.putState(flightNo, buffer);
     }
 
@@ -51,10 +53,12 @@ class FlightInfoContract extends Contract {
             queryString.selector.Passengers = personID;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
-            iterator = await ctx.stub.getQueryResult(queryString);
+            console.log('query '+ JSON.stringify(queryString));
+            iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
             if(!iterator){
                 continue;
             }
+            console.log('find data'+iterator);
             results=results.concat(await this.getAllResults(iterator));
             date.setDate(date.getDate()-1);
         }
@@ -71,10 +75,12 @@ class FlightInfoContract extends Contract {
         let i;
         queryString.selector = {};
         queryString.selector.ID = flightID;
-        const iterator = await ctx.stub.getQueryResult(queryString);
+        console.log('query '+ JSON.stringify(queryString));
+        const iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         if(!iterator){
             return JSON.stringify(results);
         }
+        console.log('find data'+iterator);
         results = await this.getAllResults(iterator);
         for(i=0;i<results.length;i++){
             Passengers[i] = results[i].Passengers;

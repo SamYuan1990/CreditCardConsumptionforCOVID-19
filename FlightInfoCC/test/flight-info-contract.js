@@ -83,7 +83,7 @@ describe('FlightInfoContract', () => {
             queryString.selector = {};
             queryString.selector.Passengers = 'P0001';
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
                     Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
                 ]));
@@ -95,7 +95,7 @@ describe('FlightInfoContract', () => {
             queryString.selector = {};
             queryString.selector.Passengers = 'P0001';
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
                     Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
                 ]));
@@ -103,7 +103,7 @@ describe('FlightInfoContract', () => {
             queryString2.selector = {};
             queryString2.selector.Passengers = 'P0001';
             queryString2.selector.Date = new Date(new Date().setDate(new Date().getDate() - 1)).toFormat('YYYY-MM-DD');
-            ctx.stub.getQueryResult.withArgs(queryString2).resolves(
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString2)).resolves(
                 createIterator([
                     Buffer.from('{"ID":"F002","From":"BJ","To":"NY","Date":"2020-03-24","Passengers":"P0001"}')
                 ]));
@@ -115,7 +115,7 @@ describe('FlightInfoContract', () => {
             queryString.selector = {};
             queryString.selector.Passengers = 'P0001';
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(createIterator([]));
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(createIterator([]));
             await contract.SearchRecentFlight(ctx,'P0003',5).should.eventually.deep.equal(JSON.stringify([]));
         });
     });
@@ -125,7 +125,7 @@ describe('FlightInfoContract', () => {
             let queryString = {};
             queryString.selector = {};
             queryString.selector.ID = 'F001';
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
                     Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}')
                 ]));
@@ -137,7 +137,7 @@ describe('FlightInfoContract', () => {
             queryString.selector = {};
             queryString.selector.ID = 'F001';
             const data = createIterator([Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}'),Buffer.from('{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0002"}')]);
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(data);
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(data);
             await contract.GetPassengers(ctx,'F001').should.eventually.deep.equal(JSON.stringify(['P0001','P0002']));
         });
 
@@ -145,7 +145,7 @@ describe('FlightInfoContract', () => {
             let queryString = {};
             queryString.selector = {};
             queryString.selector.ID = 'F001';
-            ctx.stub.getQueryResult.withArgs(queryString).resolves(createIterator([]));
+            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(createIterator([]));
             await contract.GetPassengers(ctx,'F001').should.eventually.deep.equal(JSON.stringify([]));
         });
     });
