@@ -5,3 +5,7 @@ script:
     - npm install
     - npm test
     - cd ..
+    - cd HospitalCC
+    - npm install
+    - npm test
+    - cd ..

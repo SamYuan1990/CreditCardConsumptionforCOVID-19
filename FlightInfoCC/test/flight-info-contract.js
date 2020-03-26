@@ -114,7 +114,7 @@ describe('FlightInfoContract', () => {
             let queryString = {};
             queryString.selector = {};
             queryString.selector.Passengers = 'P0001';
-            queryString.selector.Date = new Date().toFormat('yyyy-MM-dd');
+            queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
             ctx.stub.getQueryResult.withArgs(queryString).resolves(createIterator([]));
             await contract.SearchRecentFlight(ctx,'P0003',5).should.eventually.deep.equal(JSON.stringify([]));
         });
