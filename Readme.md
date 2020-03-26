@@ -22,3 +22,6 @@ It's common agreement that the earlier for some actions be taken the better for 
 
 ### FlightInfoCC
 The filght Info CC is a blockchian based system, saving people travaling info. By date, from, to, identifier. Which will be used to tracking people who may be infected deal to sharing same filght.
+
+### HospitalInfoCC
+The hopspital Info CC is a blockchian based system, saving patient info. By date, location, virus, identifier. Which will be used to AI anaylsis and provide people identifier list.
