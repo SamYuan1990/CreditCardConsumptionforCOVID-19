@@ -34,6 +34,7 @@ class FlightInfoContract extends Contract {
 
     async createFlightInfo(ctx,flightNo,flightInfo){
         const buffer = Buffer.from(flightInfo);
+        console.log('create:'+flightInfo);
         await ctx.stub.putState(flightNo, buffer);
     }
 
@@ -51,6 +52,7 @@ class FlightInfoContract extends Contract {
             queryString.selector.Passengers = personID;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
+            console.log('query:'+queryString);
             iterator = await ctx.stub.getQueryResult(queryString);
             if(!iterator){
                 continue;
@@ -71,6 +73,7 @@ class FlightInfoContract extends Contract {
         let i;
         queryString.selector = {};
         queryString.selector.ID = flightID;
+        console.log('query:'+queryString);
         const iterator = await ctx.stub.getQueryResult(queryString);
         if(!iterator){
             return JSON.stringify(results);

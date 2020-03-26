@@ -32,9 +32,10 @@ class HospitalInfoContract extends Contract {
         }
     }
 
-    async createPatientInfo(ctx,flightNo,flightInfo){
-        const buffer = Buffer.from(flightInfo);
-        await ctx.stub.putState(flightNo, buffer);
+    async createPatientInfo(ctx,CaseID,PatientInfo){
+        const buffer = Buffer.from(PatientInfo);
+        console.log('create:'+PatientInfo);
+        await ctx.stub.putState(PatientInfo, buffer);
     }
 
     async SearchRecentPatients(ctx,Virus,day){
@@ -51,6 +52,7 @@ class HospitalInfoContract extends Contract {
             queryString.selector.Virus = Virus;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
+            console.log('query:'+queryString);
             iterator = await ctx.stub.getQueryResult(queryString);
             if(!iterator){
                 continue;
@@ -69,6 +71,7 @@ class HospitalInfoContract extends Contract {
         let queryString = {};
         queryString.selector = {};
         queryString.selector.Virus = Virus;
+        console.log('query:'+queryString);
         const iterator = await ctx.stub.getQueryResult(queryString);
         if(!iterator){
             return JSON.stringify(results);
