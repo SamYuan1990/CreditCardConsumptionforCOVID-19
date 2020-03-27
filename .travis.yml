@@ -8,6 +8,7 @@ jobs:
       script: 
             - cd webUI/my-app
             - npm install
+            - export CI=true
             - npm test
     - stage: TEST
       script: 

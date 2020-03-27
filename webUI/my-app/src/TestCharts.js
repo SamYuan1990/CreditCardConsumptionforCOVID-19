@@ -66,7 +66,10 @@ class TestCharts extends React.Component {
 
   render() {
     return (
-      <div className="theChart" id="theChart" ref="theChart">
+      <div>
+        <p>Global Map</p>
+        <div className="theChart" id="theChart" ref="theChart">
+        </div>
       </div>
     );
   }
