@@ -6,6 +6,16 @@ jobs:
   include:
     - stage: TEST
       script: 
+            - cd webUI/my-app
+            - npm install
+            - npm test
+    - stage: TEST
+      script: 
+            - cd FlightInfoCC
+            - npm install
+            - npm test
+    - stage: TEST
+      script: 
             - cd FlightInfoCC
             - npm install
             - npm test
