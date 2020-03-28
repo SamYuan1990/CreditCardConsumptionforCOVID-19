@@ -19,10 +19,10 @@ class TestCharts extends React.Component {
 
   };
 
-  componentDidMount() {
-    this.drawChart()
-    //this.update()
-    // this.mockData();
+  shouldComponentUpdate(){
+    d3.select('.myUI').remove();
+    this.drawChart();
+    return true;
   }
 
   drawChart = ()=>{
@@ -34,7 +34,7 @@ class TestCharts extends React.Component {
     .domain(d3.extent(this.props.dataArray))
     .interpolator(d3.interpolateReds)
     .unknown("#ccc")
-    const svg = d3.select('#theChart').append('svg')
+    const svg = d3.select('.theChart').append('svg').attr('class','myUI')
     .style("display", "block")
     .attr("viewBox", [0, 0, width, height]);
 
@@ -59,16 +59,13 @@ class TestCharts extends React.Component {
       .attr("d", path)
     .append("title");
 
-
-    svg.node();
-
   }
 
   render() {
     return (
       <div>
         <p>Global Map</p>
-        <div className="theChart" id="theChart" ref="theChart">
+        <div className="theChart">
         </div>
       </div>
     );

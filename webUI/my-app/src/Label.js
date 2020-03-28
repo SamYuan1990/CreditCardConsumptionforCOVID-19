@@ -22,7 +22,7 @@ import {
         .interpolator(d3.interpolateReds)
         .unknown("#ccc");
       return(
-      <div className="theLabel" id="theLabel" ref="theLabel">
+      <div className="theLabel">
                       <LegendLinear
           scale={color}
           labelFormat={(d, i) => {
