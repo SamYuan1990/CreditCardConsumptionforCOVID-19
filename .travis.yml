@@ -6,6 +6,10 @@ jobs:
   include:
     - stage: TEST
       script: 
+            - cd webUI/mockServer
+            - npm install
+            - nohup npm start &
+            - cd ../..
             - cd webUI/my-app
             - npm install
             - export CI=true
