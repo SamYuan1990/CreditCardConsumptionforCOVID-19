@@ -2,7 +2,9 @@ import React from 'react';
 import './App.css';
 import TestCharts from './TestCharts';
 import Label from './Label';
+import MyForm from './Form';
 import axios from 'axios';
+import * as reactBootstrap from 'react-bootstrap';
 
 class App extends React.Component {
 
@@ -48,6 +50,12 @@ class App extends React.Component {
 
   render() {
   return (
+    <reactBootstrap.Grid>
+    <reactBootstrap.Row className="show-grid">
+      <reactBootstrap.Col xs={12} md={8}>
+        <MyForm/>
+      </reactBootstrap.Col>
+      <reactBootstrap.Col xs={12} md={8}>
     <div>
       <div className="App">
         <TestCharts data={this.state.data} dataArray={this.state.dataArray}/>
@@ -56,6 +64,9 @@ class App extends React.Component {
           <Label dataArray={this.state.dataArray}/>
       </div>
     </div>
+    </reactBootstrap.Col>
+  </reactBootstrap.Row>
+  </reactBootstrap.Grid>
   )
   }
 }
