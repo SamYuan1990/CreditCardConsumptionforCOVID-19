@@ -104,8 +104,8 @@ LANGUAGE="node"
 TIMEOUT=3
 DELAY=3
 
-CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/FlightInfoCC"
-mycc=FlightInfoCC
+CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/MarketCC"
+mycc=MarketCC
 CHANNEL_NAME=mychannel
 #packageChaincode 1 0 1
 installChaincodeMycc 0 1
@@ -114,13 +114,13 @@ ARGS='{"Args":[]}'
 instantiateChaincodeMyCC 0 1
 #instantiateChaincodeMyCC 0 2
 sleep 60
-ARGS='{"Args":["createFlightInfo","F001_P0001","{\"ID\":\"F001\",\"From\":\"BJ\",\"To\":\"NY\",\"Date\":\"2020-03-25\",\"Passengers\":\"P0001\"}"]}'
+ARGS='{"Args":["createTradeInfo","M001_C0001","{\"ID\":\"M001\",\"Date\":\"2020-03-25\",\"Credit_Card\":\"C0001\"}"]}'
 chaincodeInvokeMyCC 0 1 0 2
 sleep 15
-ARGS='{"Args":["SearchRecentFlight","P0001","5"]}'
+ARGS='{"Args":["SearchRecentMarket","C0001","5"]}'
 chaincodeInvokeMyCC 0 1 0 2
 sleep 15
-ARGS='{"Args":["GetPassengers","F001"]}'
+ARGS='{"Args":["GetCreditCards","M001"]}'
 chaincodeInvokeMyCC 0 1 0 2
 
-echo "completed FlightInfo"
+echo "completed MarketInfo"
