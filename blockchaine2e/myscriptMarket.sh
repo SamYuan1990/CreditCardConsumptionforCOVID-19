@@ -114,7 +114,7 @@ ARGS='{"Args":[]}'
 instantiateChaincodeMyCC 0 1
 #instantiateChaincodeMyCC 0 2
 sleep 60
-ARGS='{"Args":["createTradeInfo","M001_C0001","{\"ID\":\"F001\",\"Date\":\"2020-03-25\",\"Credit_Card\":\"C0001\"}"]}'
+ARGS='{"Args":["createTradeInfo","M001_C0001","{\"ID\":\"M001\",\"Date\":\"2020-03-25\",\"Credit_Card\":\"C0001\"}"]}'
 chaincodeInvokeMyCC 0 1 0 2
 sleep 15
 ARGS='{"Args":["SearchRecentMarket","C0001","5"]}'
