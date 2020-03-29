@@ -7,9 +7,9 @@
 const { Contract } = require('fabric-contract-api');
 require('date-utils');
 /*
-{"ID":"F001","From":"BJ","To":"NY","Date":"2020-03-25","Passengers":"P0001"}
+{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0001"}
 */
-class FlightInfoContract extends Contract {
+class MarketInfoContract extends Contract {
 
     async getAllResults(iterator, getKeys) {
         const allResults = [];
@@ -33,14 +33,14 @@ class FlightInfoContract extends Contract {
         }
     }
 
-    async createFlightInfo(ctx,flightNo,flightInfo){
+    async createTradeInfo(ctx,flightNo,flightInfo){
         const buffer = Buffer.from(flightInfo);
         console.log('create flight info '+buffer);
         await ctx.stub.putState(flightNo, buffer);
     }
 
-    async SearchRecentFlight(ctx,personID,day){
-        let Flights = [];
+    async SearchRecentMarket(ctx,personID,day){
+        let Markets = [];
         let results = [];
         let date = new Date();
         let iterator;
@@ -50,7 +50,7 @@ class FlightInfoContract extends Contract {
         for (i=0;i<day;i++){
             queryString = {};
             queryString.selector = {};
-            queryString.selector.Passengers = personID;
+            queryString.selector.Credit_Card = personID;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
             console.log('query '+ JSON.stringify(queryString));
@@ -63,12 +63,12 @@ class FlightInfoContract extends Contract {
             date.setDate(date.getDate()-1);
         }
         for(i=0;i<results.length;i++){
-            Flights[i] = results[i].ID;
+            Markets[i] = results[i].ID;
         }
-        return JSON.stringify(Flights);
+        return JSON.stringify(Markets);
     }
 
-    async GetPassengers(ctx,flightID){
+    async GetCreditCards(ctx,flightID){
         let results =[];
         let Passengers = [];
         let queryString = {};
@@ -89,4 +89,4 @@ class FlightInfoContract extends Contract {
     }
 }
 
-module.exports = FlightInfoContract;
+module.exports = MarketInfoContract;

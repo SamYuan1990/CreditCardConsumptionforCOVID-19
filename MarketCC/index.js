@@ -4,7 +4,7 @@
 
 'use strict';
 
-const FlightInfoContract = require('./lib/flight-info-contract');
+const MarketInfoContract = require('./lib/market-info-contract');
 
-module.exports.FlightInfoContract = FlightInfoContract;
-module.exports.contracts = [ FlightInfoContract ];
+module.exports.MarketInfoContract = MarketInfoContract;
+module.exports.contracts = [ MarketInfoContract ];
