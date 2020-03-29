@@ -13,14 +13,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data : {
-        "Afghanistan" : 0,
-        "Australia" : 0,
-        "Japan" : 0,
-        "Canada": 0,
-        "China" : 0
-      },
-      dataArray : [0,1000],
+      data : {},
+      dataArray : [0,100000],
       range: [{label: "Red",
       usage: "33.3"},{label: "Yellow",
       usage: "33.3"},{label: "Green",
@@ -48,6 +42,16 @@ class App extends React.Component {
     }).catch(function (error){
       console.log(error);
     });
+    await axios.get("https://api.covid19api.com/summary").then(function(response){
+      var arrayLength = response.data.Countries.length;
+      let covid19api={};
+      for (var i = 0; i < arrayLength; i++) {
+          covid19api[response.data.Countries[i].Country]=response.data.Countries[i].TotalConfirmed;
+      }
+      mydata.data=covid19api;
+    }).catch(function (error){
+      console.log(error);
+    });
     this.setState(mydata);
   }
 
@@ -61,7 +65,7 @@ class App extends React.Component {
       <Col xs={6} md={4}>
       <div className="App">
         <p>My area</p>
-        <GEOGraph height={580} width={960} dataArray={this.state.dataArray} data={this.state.data}/>
+        <GEOGraph height={300} width={300} dataArray={this.state.dataArray} data={this.state.data}/>
         <div className="Label">
               <Label dataArray={this.state.dataArray}/>
           </div>

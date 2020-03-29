@@ -6,14 +6,8 @@ server.listen(5000);
 server.get('/data',function(req,res){
     let data = 
     {
-        data : {
-          "Afghanistan" : Math.round(Math.random()*1000),
-          "Australia" : Math.round(Math.random()*1000),
-          "Japan" : Math.round(Math.random()*1000),
-          "Canada": Math.round(Math.random()*1000),
-          "China" : Math.round(Math.random()*1000)
-        },
-        dataArray : [0,1000],
+        data : {},
+        dataArray : [0,100000],
         range: [{label: "Red",
         usage: Math.round(Math.random()*30)},{label: "Yellow",
         usage: Math.round(Math.random()*30)},{label: "Green",

@@ -8,9 +8,6 @@ const bg = '#f9f7e8';
 
 const world = topojson.feature(topology, topology.objects.countries);
 
-
-
-
 class GEOGraph extends React.Component {
 
   state = {
@@ -43,9 +40,9 @@ class GEOGraph extends React.Component {
                     fill={color(this.props.data[`${f.properties.name}`])}
                     stroke={bg}
                     strokeWidth={0.5}
-                    /*onClick={event => {
+                    onClick={event => {
                       alert(`clicked: ${f.properties.name} ${this.props.data[`${f.properties.name}`]}`);
-                    }}*/
+                    }}
                   />
                 );
               })}
