@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders learn react link', () => {	
   const { getByText } = render(<App />);	
-  const linkElement = getByText(/Global Map/i);	
+  const linkElement = getByText(/Percent in my area/i);	
   expect(linkElement).toBeInTheDocument();	
 });
