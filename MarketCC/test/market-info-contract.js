@@ -107,7 +107,7 @@ describe('MarketInfoContract', () => {
                 createIterator([
                     Buffer.from('{"ID":"M002","Date":"2020-03-25","Credit_Card":"C0001"}')
                 ]));
-            await contract.SearchRecentMarket(ctx,'P0001',5).should.eventually.deep.equal(JSON.stringify(['M001','M002']));
+            await contract.SearchRecentMarket(ctx,'C0001',5).should.eventually.deep.equal(JSON.stringify(['M001','M002']));
         });
 
         it('Not found',async () => {
@@ -120,7 +120,7 @@ describe('MarketInfoContract', () => {
         });
     });
 
-    describe('#Search Passenger list via Flight', ()=>{
+    describe('#Search Credit Card list via Market', ()=>{
         it('found return one', async () => {
             let queryString = {};
             queryString.selector = {};
@@ -137,9 +137,9 @@ describe('MarketInfoContract', () => {
             queryString.selector = {};
             queryString.selector.ID = 'M001';
             const data = createIterator([Buffer.from('{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0001"}'),
-            Buffer.from('{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0002"}')]);
+                Buffer.from('{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0002"}')]);
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(data);
-            await contract.GetCreditCards(ctx,'F001').should.eventually.deep.equal(JSON.stringify(['C0001','C0002']));
+            await contract.GetCreditCards(ctx,'M001').should.eventually.deep.equal(JSON.stringify(['C0001','C0002']));
         });
 
         it('Not found', async () => {

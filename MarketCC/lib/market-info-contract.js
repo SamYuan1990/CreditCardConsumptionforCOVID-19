@@ -70,7 +70,7 @@ class MarketInfoContract extends Contract {
 
     async GetCreditCards(ctx,flightID){
         let results =[];
-        let Passengers = [];
+        let Credit_Cards = [];
         let queryString = {};
         let i;
         queryString.selector = {};
@@ -83,9 +83,9 @@ class MarketInfoContract extends Contract {
         console.log('find data'+iterator);
         results = await this.getAllResults(iterator);
         for(i=0;i<results.length;i++){
-            Passengers[i] = results[i].Passengers;
+            Credit_Cards[i] = results[i].Credit_Card;
         }
-        return JSON.stringify(Passengers);
+        return JSON.stringify(Credit_Cards);
     }
 }
 
