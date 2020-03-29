@@ -16,12 +16,7 @@ jobs:
             - npm test
     - stage: TEST
       script: 
-            - cd FlightInfoCC
-            - npm install
-            - npm test
-    - stage: TEST
-      script: 
-            - cd FlightInfoCC
+            - cd MarketCC
             - npm install
             - npm test
     - stage: TEST
@@ -45,12 +40,12 @@ jobs:
             - cd fabric-samples/first-network
             - ./byfn.sh up -n -i 1.4.4 -s couchdb
             - cd ../..
-            - docker cp myscriptFlight.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+            - docker cp myscriptMarket.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
             - cd ..
-            - docker cp FlightInfoCC cli:/opt/gopath/src/github.com/chaincode/
-            - docker exec cli scripts/myscriptFlight.sh    
+            - docker cp MarketCC cli:/opt/gopath/src/github.com/chaincode/
+            - docker exec cli scripts/myscriptMarket.sh    
             - docker ps
-            - docker logs dev-peer0.org1.example.com-FlightInfoCC-1.0
+            - docker logs dev-peer0.org1.example.com-MarketCC-1.0
             - docker logs peer0.org1.example.com
     - stage: TEST
       script: 

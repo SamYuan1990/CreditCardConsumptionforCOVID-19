@@ -104,8 +104,8 @@ LANGUAGE="node"
 TIMEOUT=3
 DELAY=3
 
-CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/FlightInfoCC"
-mycc=FlightInfoCC
+CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/MarketCC"
+mycc=MarketCC
 CHANNEL_NAME=mychannel
 #packageChaincode 1 0 1
 installChaincodeMycc 0 1
