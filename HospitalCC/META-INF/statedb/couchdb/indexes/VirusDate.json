@@ -1,1 +1,1 @@
-{"index":{"fields":["Virus","Date"]},"ddoc":"VirusDateDoc", "name":"VirusDate","type":"json"}
+{"index":{"fields":["status","Date"]},"ddoc":"statusDateDoc", "name":"statusDate","type":"json"}
