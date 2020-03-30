@@ -114,7 +114,7 @@ ARGS='{"Args":[]}'
 instantiateChaincodeMyCC 0 1
 #instantiateChaincodeMyCC 0 2
 sleep 60
-ARGS='{"Args":["UpdateLocation","A"]}'
+ARGS='{"Args":["UpdateLocation","[\"M0001\",\"M0002\"]"]}'
 chaincodeInvokeMyCC 0 1 0 2
 ARGS='{"Args":["getLocations"]}'
 chaincodeInvokeMyCC 0 1 0 2
