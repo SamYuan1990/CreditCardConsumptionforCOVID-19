@@ -33,15 +33,46 @@ class HospitalInfoContract extends Contract {
         }
     }
 
-
-    async createPatientInfo(ctx,CaseNo,PatientInfo){
-        const buffer = Buffer.from(PatientInfo);
-        console.log('create '+ JSON.stringify(PatientInfo));
-        await ctx.stub.putState(CaseNo, buffer);
+    async UpdateLocation(ctx,location){
+        const buffer = Buffer.from(JSON.stringify(location));
+        await ctx.stub.putState('location', buffer);
     }
 
-    async SearchRecentPatients(ctx,Virus,day){
-        let Patients = [];
+    async createConfirmed(ctx,credit_card,cough,chest_pain,fever,date,status){
+        let PersonInfo ={};
+        PersonInfo.credit_card=credit_card;
+        PersonInfo.cough=cough;
+        PersonInfo.chest_pain=chest_pain;
+        PersonInfo.fever=fever;
+        PersonInfo.status=status;
+        PersonInfo.Date=date;
+        PersonInfo.confirmed='true';
+        const buffer = Buffer.from(JSON.stringify(PersonInfo));
+        console.log('create '+ JSON.stringify(PersonInfo));
+        await ctx.stub.putState(credit_card, buffer);
+    }
+
+    async getLocations(ctx){
+        return await ctx.stub.getState('location');
+    }
+
+
+    async createPatientInfo(ctx,credit_card,cough,chest_pain,fever,date,status){
+        let PersonInfo ={};
+        PersonInfo.credit_card=credit_card;
+        PersonInfo.cough=cough;
+        PersonInfo.chest_pain=chest_pain;
+        PersonInfo.fever=fever;
+        PersonInfo.status=status;
+        PersonInfo.Date=date;
+        PersonInfo.confirmed='false';
+        const buffer = Buffer.from(JSON.stringify(PersonInfo));
+        console.log('create '+ JSON.stringify(PersonInfo));
+        await ctx.stub.putState(credit_card, buffer);
+    }
+
+    async queryByStatusDate(ctx,status,day){
+        let People = [];
         let results = [];
         let date = new Date();
         let iterator;
@@ -51,7 +82,7 @@ class HospitalInfoContract extends Contract {
         for (i=0;i<day;i++){
             queryString = {};
             queryString.selector = {};
-            queryString.selector.Virus = Virus;
+            queryString.selector.status = status;
             queryday = date.toFormat('YYYY-MM-DD');
             queryString.selector.Date = queryday;
             console.log('query '+ JSON.stringify(queryString));
@@ -64,16 +95,18 @@ class HospitalInfoContract extends Contract {
             date.setDate(date.getDate()-1);
         }
         for(i=0;i<results.length;i++){
-            Patients[i] = results[i].Patient;
+            People[i] = results[i].credit_card;
         }
-        return JSON.stringify(Patients);
+        return JSON.stringify(People);
     }
 
-    async GetPatients(ctx,Virus){
+    async queryByStatus(ctx,status){
+        let People = [];
         let results =[];
         let queryString = {};
+        let i;
         queryString.selector = {};
-        queryString.selector.Virus = Virus;
+        queryString.selector.status = status;
         console.log('query '+ JSON.stringify(queryString));
         const iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
         if(!iterator){
@@ -81,7 +114,10 @@ class HospitalInfoContract extends Contract {
         }
         console.log('find data'+iterator);
         results = await this.getAllResults(iterator);
-        return JSON.stringify(results);
+        for(i=0;i<results.length;i++){
+            People[i] = results[i].credit_card;
+        }
+        return JSON.stringify(People);
     }
 }
 
