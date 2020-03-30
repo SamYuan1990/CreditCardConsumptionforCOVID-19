@@ -148,33 +148,25 @@ describe('HospitalInfoContract', () => {
             let queryString = {};
             queryString.selector = {};
             queryString.selector.status = 'success';
-            queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
+            queryString.selector.Date = '2020-03-25';
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
                     Buffer.from('{"cough":"false","Date":"2020-03-25","chest_pain":"false","fever":0,"credit_card":"C0001","status":"success"}'),
                 ]));
-            await contract.queryByStatusDate(ctx,'success',5).should.eventually.deep.equal(JSON.stringify(['C0001']));
+            await contract.queryByStatusDate(ctx,'success','2020-03-25').should.eventually.deep.equal(JSON.stringify(['C0001']));
         });
 
         it('should return many', async () => {
             let queryString = {};
             queryString.selector = {};
             queryString.selector.status = 'success';
-            queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
+            queryString.selector.Date = '2020-03-24';
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
-                    Buffer.from('{"cough":"false","Date":"2020-03-25","chest_pain":"false","fever":0,"credit_card":"C0001","status":"success"}'),
-                    Buffer.from('{"cough":"false","Date":"2020-03-25","chest_pain":"false","fever":0,"credit_card":"C0003","status":"success"}'),
+                    Buffer.from('{"cough":"false","Date":"2020-03-24","chest_pain":"false","fever":0,"credit_card":"C0001","status":"success"}'),
+                    Buffer.from('{"cough":"false","Date":"2020-03-24","chest_pain":"false","fever":0,"credit_card":"C0003","status":"success"}'),
                 ]));
-            let queryString2 = {};
-            queryString2.selector = {};
-            queryString2.selector.status = 'success';
-            queryString2.selector.Date = new Date(new Date().setDate(new Date().getDate() - 1)).toFormat('YYYY-MM-DD');
-            ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString2)).resolves(
-                createIterator([
-                    Buffer.from('{"cough":"false","Date":"2020-03-25","chest_pain":"false","fever":0,"credit_card":"C0002","status":"success"}'),
-                ]));
-            await contract.queryByStatusDate(ctx,'success',5).should.eventually.deep.equal(JSON.stringify(['C0001','C0003','C0002']));
+            await contract.queryByStatusDate(ctx,'success','2020-03-24').should.eventually.deep.equal(JSON.stringify(['C0001','C0003']));
         });
 
         it('Not found',async () => {
@@ -183,7 +175,7 @@ describe('HospitalInfoContract', () => {
             queryString.selector.status = 'success';
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(createIterator([]));
-            await contract.queryByStatusDate(ctx,'success',5).should.eventually.deep.equal(JSON.stringify([]));
+            await contract.queryByStatusDate(ctx,'success','2020-03-25').should.eventually.deep.equal(JSON.stringify([]));
         });
     });
 

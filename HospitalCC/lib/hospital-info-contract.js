@@ -75,26 +75,22 @@ class HospitalInfoContract extends Contract {
     async queryByStatusDate(ctx,status,day){
         let People = [];
         let results = [];
-        let date = new Date();
         let iterator;
         let i;
         let queryday;
         let queryString;
-        for (i=0;i<day;i++){
-            queryString = {};
-            queryString.selector = {};
-            queryString.selector.status = status;
-            queryday = date.toFormat('YYYY-MM-DD');
-            queryString.selector.Date = queryday;
-            console.log('query '+ JSON.stringify(queryString));
-            iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
-            if(!iterator){
-                continue;
-            }
-            console.log('find data'+iterator);
-            results=results.concat(await this.getAllResults(iterator));
-            date.setDate(date.getDate()-1);
+        queryString = {};
+        queryString.selector = {};
+        queryString.selector.status = status;
+        queryday = day;
+        queryString.selector.Date = queryday;
+        console.log('query '+ JSON.stringify(queryString));
+        iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
+        if(!iterator){
+            return JSON.stringify(People);
         }
+        console.log('find data'+iterator);
+        results=results.concat(await this.getAllResults(iterator));
         for(i=0;i<results.length;i++){
             People[i] = results[i].credit_card;
         }
