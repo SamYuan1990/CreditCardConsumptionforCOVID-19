@@ -34,8 +34,8 @@ class HospitalInfoContract extends Contract {
     }
 
     async UpdateLocation(ctx,location){
-        const buffer = Buffer.from(JSON.stringify(location));
-        await ctx.stub.putState('location', buffer);
+        //const buffer = Buffer.from(JSON.stringify(location));
+        await ctx.stub.putState('location', location);
     }
 
     async createConfirmed(ctx,credit_card,cough,chest_pain,fever,date,status){
