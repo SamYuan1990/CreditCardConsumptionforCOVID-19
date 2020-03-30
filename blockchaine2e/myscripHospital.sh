@@ -114,13 +114,18 @@ ARGS='{"Args":[]}'
 instantiateChaincodeMyCC 0 1
 #instantiateChaincodeMyCC 0 2
 sleep 60
-ARGS='{"Args":["createPatientInfo","P0001_X","{\"Localtion\":\"Space\",\"Date\":\"2020-03-25\",\"Date_Before\":3,\"Patient\":\"P0001\",\"Virus\":\"X\"}"]}'
+ARGS='{"Args":["UpdateLocation","A"]}'
+chaincodeInvokeMyCC 0 1 0 2
+ARGS='{"Args":["getLocations"]}'
+chaincodeInvokeMyCC 0 1 0 2
+ARGS='{"Args":["createConfirmed","C0001","false","false","3","2020-03-20","warning"]}'
 chaincodeInvokeMyCC 0 1 0 2
 sleep 15
-ARGS='{"Args":["SearchRecentPatients","X","5"]}'
+ARGS='{"Args":["createPatientInfo","C0002","false","false","3","2020-03-20","warning"]}'
 chaincodeInvokeMyCC 0 1 0 2
 sleep 15
-ARGS='{"Args":["GetPatients","X"]}'
+ARGS='{"Args":["queryByStatusDate","warning","14"]}'
 chaincodeInvokeMyCC 0 1 0 2
-
+ARGS='{"Args":["queryByStatus","warning"]}'
+chaincodeInvokeMyCC 0 1 0 2
 echo "completed HospitalInfo"
