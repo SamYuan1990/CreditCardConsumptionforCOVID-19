@@ -18,14 +18,14 @@ docker cp MarketCC cli:/opt/gopath/src/github.com/chaincode/
 docker cp HospitalCC cli:/opt/gopath/src/github.com/chaincode/
 docker exec cli scripts/myscriptMarket.sh    
 docker exec cli scripts/myscripHospital.sh    
-cd JavaServer
-nohup gradle runbootRun &
-sleep 60
-curl http://localhost:5000
-cat nohup.out
-cd ..
-cd webUI/my-app
-npm install
-nohup npm start &
-curl http://localhost:3000
-cat nohup.out
+#cd JavaServer
+#nohup gradle runbootRun &
+#sleep 60
+#curl http://localhost:5000
+#cat nohup.out
+#cd ..
+#cd webUI/my-app
+#npm install
+#nohup npm start &
+#curl http://localhost:3000
+#cat nohup.out

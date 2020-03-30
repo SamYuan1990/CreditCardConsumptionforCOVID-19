@@ -2,6 +2,7 @@ package com.example.springboot;
 
 import java.util.Arrays;
 
+import com.example.springboot.util.utils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +27,8 @@ public class Application {
 			for (String beanName : beanNames) {
 				System.out.println(beanName);
 			}
-
+			utils.InitUser();
+			utils.Init();
 		};
 	}
 

@@ -14,6 +14,7 @@ public class HelloController {
 	@RequestMapping("/")
 	public String index() {
 		initMarkets();
+		System.out.println("Completed market");
 		initHosptial();
 
 		return "Greetings from Spring Boot!";
@@ -76,6 +77,7 @@ public class HelloController {
 			initMarket("M004","C0030",date);
 			initMarket("M004","C0031",date);
 			initMarket("M004","C0032",date);
+			System.out.println("Completed for "+date);
 			d1=yesterday(d1);
 		}
 	}

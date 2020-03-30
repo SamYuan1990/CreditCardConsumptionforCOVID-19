@@ -23,6 +23,10 @@ public class utils {
 	public static String danger = "danger";
 	public static String HosptialCC="HospitalCC";
 	public static String MarketCC="MarketCC";
+	public static HFClient hfclient = HFClient.createNewInstance();
+ 	public static User appuser = null;
+	public static Channel mychannel = null;
+
 
 
 	public static ArrayList<ByteString> x509Header = new ArrayList<ByteString>();
@@ -52,14 +56,10 @@ public class utils {
         return null;
     }
 
-    public static String Invoke(String chaincodeName,String fcn,String... arguments) {
-		String payload="";
-		try {
-			NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);
-			HFClient hfclient = HFClient.createNewInstance();
+	public static void InitUser(){
+    	try {
 			CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
 			hfclient.setCryptoSuite(cryptoSuite);
-			User appuser = null;
 			File tempFile = File.createTempFile("teststore", "properties");
 			tempFile.deleteOnExit();
 
@@ -67,22 +67,36 @@ public class utils {
 			if (sampleStoreFile.exists()) { //For testing start fresh
 				sampleStoreFile.delete();
 			}
-			ArrayList<ByteString> trace = null;
 			final SampleStore sampleStore = new SampleStore(sampleStoreFile);
-				trace = utils.x509Header;
-				appuser = sampleStore.getMember("peer1", "Org1", "Org1MSP",
-						new File(String.valueOf(utils.findFileSk(Paths.get(utils.config_user_path).toFile()))),
-						new File("./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"));
+			appuser = sampleStore.getMember("peer1", "Org1", "Org1MSP",
+					new File(String.valueOf(utils.findFileSk(Paths.get(utils.config_user_path).toFile()))),
+					new File("./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"));
 
-			hfclient.setUserContext(appuser);
-			hfclient.loadChannelFromConfig("mychannel", networkConfig);
-			System.out.println(networkConfig.getPeerNames());
-			Channel mychannel = hfclient.getChannel("mychannel");
-			mychannel.initialize();
+		}catch (Exception e){
+    		System.out.println(e.toString());
+		}
+	}
+
+    public static void Init(){
+		try {
+		NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);
+
+		hfclient.setUserContext(appuser);
+		hfclient.loadChannelFromConfig("mychannel", networkConfig);
+		System.out.println(networkConfig.getPeerNames());
+		mychannel = hfclient.getChannel("mychannel");
+		mychannel.initialize();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+	}
+
+    public static String Invoke(String chaincodeName,String fcn,String... arguments) {
+		String payload="";
+		try {
 			ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName)
 					.setVersion("1.0")
 					.build();
-
 			TransactionProposalRequest transactionProposalRequest = hfclient.newTransactionProposalRequest();
 			transactionProposalRequest.setChaincodeID(chaincodeID);
 			transactionProposalRequest.setFcn(fcn);

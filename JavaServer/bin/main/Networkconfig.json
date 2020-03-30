@@ -47,7 +47,7 @@
         "ca_peerOrg1"
       ],
       "adminPrivateKey": {
-        "pem":"-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgujvXkDZVvXVimO46\nH97cZK3Rr3ESuZUyMTRw+dAogRyhRANCAASALDzf8W9E0QdbATw5SrAg/92rJXSK\ns4PcFx1iyJIGfkWJXXA5mkAlJ+oEqzsHl95VRjWmGOS0A2MhzVB+FgjA\n-----END PRIVATE KEY-----\n"
+        "pem":"-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg6AurxtFGQHFjYXKH\nY5tyrfDL5BsF6ljp9+I6eTGXr0qhRANCAAQKQiyboYFVZzUL63FiGE4EkshkEXLp\nucYXPjssBT6j4a/7dsn3GBieUhE2zSfAjiHKks7BQx2oi99RrICPV4E0\n-----END PRIVATE KEY-----"
       },
       "signedCert": {
         "path": "./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/signcerts/peer0.org1.example.com-cert.pem"
