@@ -16,7 +16,7 @@ import static java.lang.String.format;
 
 public class utils {
 
-    public static String config_network_path = "/Users/yuanyi/OpenSource/call4code2020/myproject/JavaServer/src/main/resources/Networkconfig.json";
+    public static String config_network_path = "./src/main/resources/Networkconfig.json";
     public static String config_user_path = "./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore";
 	public static String success = "success";
 	public static String warn = "warning";

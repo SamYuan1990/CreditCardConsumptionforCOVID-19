@@ -16,6 +16,10 @@ jobs:
             - npm test
     - stage: TEST
       script: 
+            - cd JavaServer
+            - nohup gradle runbootRun &
+    - stage: TEST
+      script: 
             - cd MarketCC
             - npm install
             - npm test
@@ -24,7 +28,7 @@ jobs:
             - cd HospitalCC
             - npm install
             - npm test
-    - stage: TEST
+    - stage: E2E TEST
       script: 
             - cd blockchaine2e
             - git submodule init
@@ -33,40 +37,25 @@ jobs:
             - curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./scripts/bootstrap.sh
             - chmod +x ./scripts/bootstrap.sh
             - ./scripts/bootstrap.sh 1.4.4 1.4.4 1.4.4
-            #- docker pull hyperledger/fabric-couchdb:0.4.16
-            #- docker tag hyperledger/fabric-couchdb:0.4.16 hyperledger/fabric-couchdb:latest
             - cd ..
+            - cp -r crypto-config ./fabric-samples/first-network
             - cp ./byfn.sh ./fabric-samples/first-network
             - cd fabric-samples/first-network
-            - ./byfn.sh up -n -i 1.4.4 -s couchdb
+            - ./byfn.sh up -n -i 1.4.4 -s couchdb -a
             - cd ../..
             - docker cp myscriptMarket.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
-            - cd ..
-            - docker cp MarketCC cli:/opt/gopath/src/github.com/chaincode/
-            - docker exec cli scripts/myscriptMarket.sh    
-            - docker ps
-            - docker logs dev-peer0.org1.example.com-MarketCC-1.0
-            - docker logs peer0.org1.example.com
-    - stage: TEST
-      script: 
-            - cd blockchaine2e
-            - git submodule init
-            - cd fabric-samples
-            - git checkout v1.4.4
-            - curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./scripts/bootstrap.sh
-            - chmod +x ./scripts/bootstrap.sh
-            - ./scripts/bootstrap.sh 1.4.4 1.4.4 1.4.4
-            #- docker pull hyperledger/fabric-couchdb:0.4.16
-            #- docker tag hyperledger/fabric-couchdb:0.4.16 hyperledger/fabric-couchdb:latest
-            - cd ..
-            - cp ./byfn.sh ./fabric-samples/first-network
-            - cd fabric-samples/first-network
-            - ./byfn.sh up -n -i 1.4.4 -s couchdb
-            - cd ../..
             - docker cp myscripHospital.sh cli:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
             - cd ..
+            - docker cp MarketCC cli:/opt/gopath/src/github.com/chaincode/
             - docker cp HospitalCC cli:/opt/gopath/src/github.com/chaincode/
+            - docker exec cli scripts/myscriptMarket.sh    
             - docker exec cli scripts/myscripHospital.sh    
-            - docker ps
-            - docker logs dev-peer0.org1.example.com-HospitalCC-1.0
-            - docker logs peer0.org1.example.com
+            - cd JavaServer
+            - nohup gradle runbootRun &
+            - sleep 60
+            - curl localhost:5000
+            - cd ..
+            - cd webUI/my-app
+            - npm install
+            - nohup npm start &
+            - curl localhost:3000
