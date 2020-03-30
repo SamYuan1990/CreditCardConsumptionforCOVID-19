@@ -13,18 +13,14 @@
 
 package com.example.springboot;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.example.springboot.util.utils;
-import com.google.protobuf.ByteString;
 
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Servlet implementation class CreateNeedServlet
@@ -54,12 +50,14 @@ public class MyStatusConntroller{
 		String ShareSpace=getShareSpaceInfo(req.getParameter("Credit_card"));
 		String status = getstatusFromAI(Credit_Card,Cough,Chest_pain,Fever,ShareSpace);
 		res.setStatus(status);
-		RecordToChain(Credit_Card,Cough,Chest_pain,Fever,status);
+		Date d =new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		RecordToChain(Credit_Card,Cough,Chest_pain,Fever,sdf.format(d),status);
 		return res;
 	}
 
-	private void RecordToChain(String credit_card, String cough, String chest_pain, String fever, String status) {
-		utils.Invoke(utils.HosptialCC,"createPatientInfo",credit_card);
+	private void RecordToChain(String credit_card, String cough, String chest_pain, String fever,String date, String status) {
+		utils.Invoke(utils.HospitalCC,"createPatientInfo",credit_card,cough,chest_pain,fever,date,status);
 	}
 
 	private String getstatusFromAI(String credit_card, String cough, String chest_pain, String fever, String shareSpace) {
@@ -69,7 +67,7 @@ public class MyStatusConntroller{
 	private static String getShareSpaceInfo(String Credit_card) {
 		String payload = utils.Invoke(utils.MarketCC,"SearchRecentMarket",Credit_card);
 		System.out.println(payload);
-		payload = utils.Invoke(utils.HosptialCC,"getLocations");
+		payload = utils.Invoke(utils.HospitalCC,"getLocations");
 		//if(contians)
 		payload="true";
 		//else

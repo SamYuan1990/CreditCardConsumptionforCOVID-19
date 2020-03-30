@@ -13,17 +13,12 @@
 
 package com.example.springboot;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 
 import com.example.springboot.util.utils;
-import com.google.protobuf.ByteString;
 
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -90,13 +85,13 @@ public class DataController{
 	}
 
 	private static int GetTotalNumberByStatus(String status) {
-		String payload = utils.Invoke(utils.HosptialCC,"queryByStatus",status);
+		String payload = utils.Invoke(utils.HospitalCC,"queryByStatus",status);
 		return Integer.valueOf(payload);
 	}
 
 	private static int GetTotalNumberByStatusAndDate(String status,Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String payload = utils.Invoke(utils.HosptialCC,"queryByStatusDate",status,sdf.format(date));
+		String payload = utils.Invoke(utils.HospitalCC,"queryByStatusDate",status,sdf.format(date));
 		return Integer.valueOf(payload);
 	}
 

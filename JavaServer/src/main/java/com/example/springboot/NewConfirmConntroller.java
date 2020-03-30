@@ -35,8 +35,8 @@ public class NewConfirmConntroller {
 	}
 
 	private void Confirmed(String credit_card) {
-		utils.Invoke(utils.HosptialCC,"createConfirmed",credit_card);
+		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_card);
 		String payload = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_card);
-		utils.Invoke(utils.HosptialCC,"UpdateMarket",payload);
+		utils.Invoke(utils.HospitalCC,"UpdateLocation",payload);
 	}
 }

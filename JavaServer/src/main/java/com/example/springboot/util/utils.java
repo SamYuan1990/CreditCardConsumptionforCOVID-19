@@ -21,7 +21,7 @@ public class utils {
 	public static String success = "success";
 	public static String warn = "warning";
 	public static String danger = "danger";
-	public static String HosptialCC="HospitalCC";
+	public static String HospitalCC ="HospitalCC";
 	public static String MarketCC="MarketCC";
 	public static HFClient hfclient = HFClient.createNewInstance();
  	public static User appuser = null;
