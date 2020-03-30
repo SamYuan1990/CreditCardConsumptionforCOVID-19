@@ -1,27 +1,47 @@
-# Virus Alert System
+# Area Alert System
 
 ## Overview
 This is a project for call for code  2020.
-As we are suffered convid-19. The major goal for this project is to do something as alert system at the 1st N days.
+As we are suffered convid-19. The major goal for this project is to do something to help CDC tracing people who shared markets or gas station in same area.
 
 ## Idea
-### Background
-When a virus stars from somewhere, hospital will receive patients. 
+The patients were infected some days before they went to hospital. For sample, people shopping at market via their credit card, gasing car via their credit card, they may be inffected as sharing spaces with the patients in market or gas station.
+This project is try to 
+Reduce CDC works on people tracing by use blockchain as solution to connected the sharing spaces via credit card record at market or gas station.
+Reduce CDC works on people investigation by making people submit web UI form and AI technology to tell if he/she is save, may inffected, or highly recommand to do a test.
+Reduce CDC works via data virsulizatin technology to show the status among the area.
 
-From medical point of view, the patients were infected some days before they went to hospital, and we call the duration as incubation period. For any new virus, we don't know the period at the beginning. So the 1st part of this system is to use AI to find out incubation period, R0 etc...
+## What this project did:
+This project completed:
+1) A webUI for indviduel subimt the credit card info, retrun he/she status.
+2) A sample AI for adjust.
+3) A blockchain logic connected market and CDC.
 
-From geo point of view, people traving around the world. Flight as sample, with the patients identification and incubation period. We can get a list of people sharing same flight, train, ship etc...
-
-Together with medical and geo views, we can say that hosptials from different localtions will report the patients with the virus.
-
-### The idea
-It's common agreement that the earlier for some actions be taken the better for social people(across the country, regoin etc...) to aginst the virus. The idea plans to use blockchain technological to connect hospitals and flight companys/ports across the regoins. Once a new virus been found, it will uploaded to blockchain and trigger AI for analysis. The AI will backfill to the system with index as incubation period, and try to find people sharing same flight, alrting as they may be infected. So that local goverment, or hosptial may know and taking actions as earlier as possible.
+## Workflow
+1) User submit info.
+2) Checking blockchain system if he/she shared market with confirmed patient.
+3) With blockchain feedback and UI collection data send to AI for result.
+4) AI logic:
+5) Updated user status on to blockchain.
+6) Geo to show all user info ammong area.
 
 ## Architecture
 
-
-### FlightInfoCC
-The filght Info CC is a blockchian based system, saving people travaling info. By date, from, to, identifier. Which will be used to tracking people who may be infected deal to sharing same filght.
+### MarketInfoCC
+The Market Info CC is a blockchian based system, saving people credit card info, as credit card, date, market location.
 
 ### HospitalInfoCC
-The hopspital Info CC is a blockchian based system, saving patient info. By date, location, virus, identifier. Which will be used to AI anaylsis and provide people identifier list.
+The hopspital Info CC is a blockchian based system, saving patient info. By date, home location, 症状， status, confrimed or not.
+
+### webUI 
+
+### things left:
+JAVA with blockchian
+Useing proto file for same data formate among CDC chain, JAVA, AI
+AI with JAVA
+Blockchain refactor
+
+### to do
+1) using real data from CDC
+2) deploy to some where to get credit card info.
+3) deploy to CDC

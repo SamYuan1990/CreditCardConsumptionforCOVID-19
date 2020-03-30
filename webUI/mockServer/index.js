@@ -22,7 +22,7 @@ server.get('/data',function(req,res){
     res.status(200).send(data);
 });
 
-server.get('/mystaus',function(req,res){
+server.get('/mystatus',function(req,res){
   let data ={
     status:"success"
   }

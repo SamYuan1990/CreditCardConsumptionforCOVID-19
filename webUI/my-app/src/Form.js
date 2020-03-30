@@ -16,7 +16,7 @@ class MyForm extends React.Component {
     let xiong=document.getElementById("xiong").checked;
     let days=document.getElementById("days").value;
     let mydata = {};
-    await axios.get("http://localhost:5000/mystaus?"+
+    await axios.get("http://localhost:5000/mystatus?"+
     "credit_card="+credit_card+
     "&zhengzhuang="+zhengzhuang+
     "&family="+family+
