@@ -115,8 +115,10 @@ instantiateChaincodeMyCC 0 1
 #instantiateChaincodeMyCC 0 2
 sleep 60
 ARGS='{"Args":["UpdateLocation","[\"M0001\",\"M0002\"]"]}'
+sleep 60
 chaincodeInvokeMyCC 0 1 0 2
 ARGS='{"Args":["getLocations"]}'
+sleep 15
 chaincodeInvokeMyCC 0 1 0 2
 ARGS='{"Args":["createConfirmed","C0001","false","false","3","2020-03-20","warning"]}'
 chaincodeInvokeMyCC 0 1 0 2

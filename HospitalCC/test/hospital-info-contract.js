@@ -67,7 +67,7 @@ describe('HospitalInfoContract', () => {
 
         it('should get a location info', async () => {
             ctx.stub.getState.withArgs('location').resolves(Buffer.from(JSON.stringify('["L0002"]')));
-            await contract.getLocations(ctx,'L0001').should.eventually.deep.equal(Buffer.from(JSON.stringify('["L0002"]')));
+            await contract.getLocations(ctx).should.eventually.deep.equal(JSON.stringify('["L0002"]'));
         });
     });
 
@@ -75,12 +75,12 @@ describe('HospitalInfoContract', () => {
 
         it('should create a location info', async () => {
             await contract.UpdateLocation(ctx,'["L0002"]');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('location','["L0002"]');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify('["L0002"]')));
         });
 
         it('should create another location info', async () => {
             await contract.UpdateLocation(ctx,'["L0001"]');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('location','["L0001"]');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify('["L0001"]')));
         });
     });
 
