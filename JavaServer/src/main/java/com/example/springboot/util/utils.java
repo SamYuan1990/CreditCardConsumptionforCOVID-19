@@ -18,7 +18,14 @@ public class utils {
 
     public static String config_network_path = "/Users/yuanyi/OpenSource/call4code2020/myproject/JavaServer/src/main/resources/Networkconfig.json";
     public static String config_user_path = "./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore";
-    public static ArrayList<ByteString> x509Header = new ArrayList<ByteString>();
+	public static String success = "success";
+	public static String warn = "warning";
+	public static String danger = "danger";
+	public static String HosptialCC="HospitalCC";
+	public static String MarketCC="MarketCC";
+
+
+	public static ArrayList<ByteString> x509Header = new ArrayList<ByteString>();
 
     public static File findFileSk(File directory) {
 
@@ -45,7 +52,7 @@ public class utils {
         return null;
     }
 
-    public static String Invoke(String chaincodeName,String fcn,String arguments) {
+    public static String Invoke(String chaincodeName,String fcn,String... arguments) {
 		String payload="";
 		try {
 			NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);

@@ -14,8 +14,11 @@
 package com.example.springboot;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import com.example.springboot.util.utils;
 import com.google.protobuf.ByteString;
@@ -31,11 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataController{
 	private static final long serialVersionUID = 1L;
 	private static int need_id = 1;
+	private static int recents = 3;
 
 	@RequestMapping("/data")
 	public Object index(){
 		Data res = new Data();
-		 int randomNumber = (int)(Math.random() * 100) + 1;
+		//int randomNumber = (int)(Math.random() * 100) + 1;
 		/*
 		let data = 
 			{
@@ -54,21 +58,53 @@ public class DataController{
 		 */
 		int[] dataArray = {0,100000};
 		res.dataArray = dataArray;
-		Label[] range={new Label("Red",randomNumber),new Label("Yellow",randomNumber),new Label("Green",randomNumber)};
+		Label[] range={new Label("Red",GetTotalNumberByStatus(utils.danger)),
+				new Label("Yellow",GetTotalNumberByStatus(utils.warn)),
+				new Label("Green",GetTotalNumberByStatus(utils.success))};
 		res.range = range;
-		Bar[] barRed= {new Bar("Mar-3",randomNumber),new Bar("Mar-4",randomNumber),new Bar("Mar-5",randomNumber)};
-		res.BarRed = barRed;
-		Bar[] barYellow= {new Bar("Mar-3",randomNumber),new Bar("Mar-4",randomNumber),new Bar("Mar-5",randomNumber)};
-		res.BarYellow = barYellow;
-		Bar[] barGreen= {new Bar("Mar-3",randomNumber),new Bar("Mar-4",randomNumber),new Bar("Mar-5",randomNumber)};
-		res.BarGreen =  barGreen;
+		Bar[] barRed= new Bar[recents];
+		Date d1 = new Date();
+		for(int i=0;i<recents;i++){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			barRed[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.danger,d1));
+			d1=yesterday(d1);
+		}
+		res.BarRed=barRed;
+		Bar[] barYellow= new Bar[recents];
+		d1 = new Date();
+		for(int i=0;i<recents;i++){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			barYellow[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.warn,d1));
+			d1=yesterday(d1);
+		}
+		res.BarYellow=barYellow;
+		Bar[] barGreen = new Bar[recents];
+		d1 = new Date();
+		for(int i=0;i<recents;i++){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			barGreen[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.success,d1));
+			d1=yesterday(d1);
+		}
+		res.BarGreen=barGreen;
 		return res;
 	}
 
-	private static String createNeed(JSONObject req) {
-		String payload = utils.Invoke("mycc","query","a");
-		System.out.println(payload);
-		return payload;
+	private static int GetTotalNumberByStatus(String status) {
+		String payload = utils.Invoke(utils.HosptialCC,"queryByStatus",status);
+		return Integer.valueOf(payload);
+	}
+
+	private static int GetTotalNumberByStatusAndDate(String status,Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String payload = utils.Invoke(utils.HosptialCC,"queryByStatusDate",status,sdf.format(date));
+		return Integer.valueOf(payload);
+	}
+
+	public Date yesterday(Date today) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(today);
+		calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+		return calendar.getTime();
 	}
 
 }

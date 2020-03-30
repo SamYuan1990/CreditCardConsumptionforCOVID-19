@@ -54,7 +54,12 @@ public class MyStatusConntroller{
 		String ShareSpace=getShareSpaceInfo(req.getParameter("Credit_card"));
 		String status = getstatusFromAI(Credit_Card,Cough,Chest_pain,Fever,ShareSpace);
 		res.setStatus(status);
+		RecordToChain(Credit_Card,Cough,Chest_pain,Fever,status);
 		return res;
+	}
+
+	private void RecordToChain(String credit_card, String cough, String chest_pain, String fever, String status) {
+		utils.Invoke(utils.HosptialCC,"createPatientInfo",credit_card);
 	}
 
 	private String getstatusFromAI(String credit_card, String cough, String chest_pain, String fever, String shareSpace) {
@@ -62,8 +67,13 @@ public class MyStatusConntroller{
 	}
 
 	private static String getShareSpaceInfo(String Credit_card) {
-		String payload = utils.Invoke("mycc","query","a");
+		String payload = utils.Invoke(utils.MarketCC,"SearchRecentMarket",Credit_card);
 		System.out.println(payload);
+		payload = utils.Invoke(utils.HosptialCC,"getLocations");
+		//if(contians)
+		payload="true";
+		//else
+		payload="false";
 		return payload;
 	}
 
