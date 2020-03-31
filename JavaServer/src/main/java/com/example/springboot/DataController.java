@@ -86,7 +86,7 @@ public class DataController{
 	}
 
 	private static int GetTotalNumberByStatus(String status) {
-		String payload = utils.Invoke(utils.HospitalCC,"queryByStatus",status);
+		String payload = utils.Query(utils.HospitalCC,"queryByStatus",status);
 		Gson gson = new Gson();
 		String[] object = gson.fromJson(payload, String[].class);
 		return object.length;
@@ -94,7 +94,7 @@ public class DataController{
 
 	private static int GetTotalNumberByStatusAndDate(String status, int i) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String payload = utils.Invoke(utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
+		String payload = utils.Query(utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
 		System.out.println(payload);
 		Gson gson = new Gson();
 		String[] object = gson.fromJson(payload, String[].class);
