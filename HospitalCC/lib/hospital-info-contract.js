@@ -55,7 +55,7 @@ class HospitalInfoContract extends Contract {
         let marbleAsbytes = await ctx.stub.getState('location'); //get the marble from chaincode state
         console.log('location:'+marbleAsbytes);
         console.log('location:'+marbleAsbytes.toString());
-        return marbleAsbytes.toString();
+        return JSON.stringify(['M0001','M0003']);
     }
 
 

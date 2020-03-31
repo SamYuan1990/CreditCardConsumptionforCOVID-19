@@ -19,6 +19,7 @@ import java.util.Date;
 
 import com.example.springboot.util.utils;
 
+import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,7 +62,7 @@ public class DataController{
 		Date d1 = new Date();
 		for(int i=0;i<recents;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barRed[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.danger,d1));
+			barRed[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.danger,i));
 			d1=yesterday(d1);
 		}
 		res.BarRed=barRed;
@@ -69,7 +70,7 @@ public class DataController{
 		d1 = new Date();
 		for(int i=0;i<recents;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barYellow[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.warn,d1));
+			barYellow[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.warn,i));
 			d1=yesterday(d1);
 		}
 		res.BarYellow=barYellow;
@@ -77,7 +78,7 @@ public class DataController{
 		d1 = new Date();
 		for(int i=0;i<recents;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barGreen[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.success,d1));
+			barGreen[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.success,i));
 			d1=yesterday(d1);
 		}
 		res.BarGreen=barGreen;
@@ -86,13 +87,18 @@ public class DataController{
 
 	private static int GetTotalNumberByStatus(String status) {
 		String payload = utils.Invoke(utils.HospitalCC,"queryByStatus",status);
-		return Integer.valueOf(payload);
+		Gson gson = new Gson();
+		String[] object = gson.fromJson(payload, String[].class);
+		return object.length;
 	}
 
-	private static int GetTotalNumberByStatusAndDate(String status,Date date) {
+	private static int GetTotalNumberByStatusAndDate(String status, int i) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String payload = utils.Invoke(utils.HospitalCC,"queryByStatusDate",status,sdf.format(date));
-		return Integer.valueOf(payload);
+		String payload = utils.Invoke(utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
+		System.out.println(payload);
+		Gson gson = new Gson();
+		String[] object = gson.fromJson(payload, String[].class);
+		return object.length;
 	}
 
 	public Date yesterday(Date today) {

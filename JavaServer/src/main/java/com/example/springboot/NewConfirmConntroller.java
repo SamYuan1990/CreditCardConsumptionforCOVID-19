@@ -14,10 +14,15 @@
 package com.example.springboot;
 
 import com.example.springboot.util.utils;
+import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Servlet implementation class CreateNeedServlet
@@ -30,13 +35,43 @@ public class NewConfirmConntroller {
 	@RequestMapping("/newConfirmed")
 	public Object index(ServletRequest req){
 		String Credit_Card=req.getParameter("Credit_card");
-		Confirmed(Credit_Card);
+		String Cough=req.getParameter("Cough");
+		String Chest_pain=req.getParameter("Chest_Pain");
+		String Fever=req.getParameter("Fever");
+		String status = utils.danger;
+		Date d =new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Confirmed(Credit_Card,Cough,Chest_pain,Fever,sdf.format(d),status);
 		return "success";
 	}
 
-	private void Confirmed(String credit_card) {
-		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_card);
-		String payload = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_card);
-		utils.Invoke(utils.HospitalCC,"UpdateLocation",payload);
+	private void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
+		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_Card,cough,chest_pain,fever,date,status);
+		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_Card);
+		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
+		Gson gson = new Gson();
+		String[] currentobject = gson.fromJson(curentLocations, String[].class);
+		String[] Recentobject = gson.fromJson(RecentLocations,String[].class);
+		Set<String> set = new TreeSet<String>();
+		for (String s:currentobject) {
+			if(s!=null) {
+				System.out.println("add 2:"+s);
+				set.add(s);
+			}
+		}
+		for (String s:Recentobject) {
+			if(s!=null) {
+				System.out.println("add:"+s);
+				set.add(s);
+			}
+		}
+		String[] mergeRS = new String[set.size()];
+		for(String s:set){
+			System.out.println("Get:"+s);
+			mergeRS[mergeRS.length-1] = s;
+		}
+		System.out.println("recent Market for "+credit_Card + " is "+RecentLocations);
+		System.out.println(gson.toJson(mergeRS));
+		utils.Invoke(utils.HospitalCC,"UpdateLocation",gson.toJson(mergeRS));
 	}
 }

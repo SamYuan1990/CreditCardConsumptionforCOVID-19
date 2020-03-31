@@ -15,6 +15,7 @@ package com.example.springboot;
 
 import com.example.springboot.util.utils;
 
+import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,7 @@ public class MyStatusConntroller{
 
 	@RequestMapping("/mystatus")
 	public Object index(ServletRequest req){
+		System.out.println(req);
 		Status res = new Status();
 		/*  
 		let data ={
@@ -44,10 +46,15 @@ public class MyStatusConntroller{
 		danger
 		 */
 		String Credit_Card=req.getParameter("Credit_card");
+		System.out.println(Credit_Card);
 		String Cough=req.getParameter("Cough");
+		System.out.println(Cough);
 		String Chest_pain=req.getParameter("Chest_Pain");
+		System.out.println(Chest_pain);
 		String Fever=req.getParameter("Fever");
+		System.out.println(Fever);
 		String ShareSpace=getShareSpaceInfo(req.getParameter("Credit_card"));
+		System.out.println(ShareSpace);
 		String status = getstatusFromAI(Credit_Card,Cough,Chest_pain,Fever,ShareSpace);
 		res.setStatus(status);
 		Date d =new Date();
@@ -65,19 +72,23 @@ public class MyStatusConntroller{
 	}
 
 	private static String getShareSpaceInfo(String Credit_card) {
-		String payload = utils.Invoke(utils.MarketCC,"SearchRecentMarket",Credit_card);
-		System.out.println(payload);
-		payload = utils.Invoke(utils.HospitalCC,"getLocations");
-		//if(contians)
-		payload="true";
-		//else
-		payload="false";
-		return payload;
-	}
-
-	private static String NewBlockInfo(String Credit_card) {
-		String payload = utils.Invoke("mycc","query","a");
-		System.out.println(payload);
+		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",Credit_card);
+		System.out.println(RecentLocations);
+		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
+		Gson gson = new Gson();
+		String[] currentobject = gson.fromJson(curentLocations, String[].class);
+		String[] RecentLocation = gson.fromJson(RecentLocations, String[].class);
+		String payload="false";
+		if(currentobject!=null) {
+			for (String s : currentobject) {
+				for (String i : RecentLocation) {
+					if (s.equals(i)) {
+						payload = "true";
+						break;
+					}
+				}
+			}
+		}
 		return payload;
 	}
 }

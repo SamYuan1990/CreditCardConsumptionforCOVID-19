@@ -67,7 +67,7 @@ describe('HospitalInfoContract', () => {
 
         it('should get a location info', async () => {
             ctx.stub.getState.withArgs('location').resolves(Buffer.from(JSON.stringify('["L0002"]')));
-            await contract.getLocations(ctx).should.eventually.deep.equal(JSON.stringify('["L0002"]'));
+            await contract.getLocations(ctx).should.eventually.deep.equal(JSON.stringify(['M0001','M0003']));
         });
     });
 

@@ -12,16 +12,32 @@ class MyForm extends React.Component {
  onClick= async() => {
     let credit_card=document.getElementById("formInlineName").value;
     let zhengzhuang=document.getElementById("zhengzhuang").checked;
-    let family=document.getElementById("family").checked;
     let xiong=document.getElementById("xiong").checked;
     let days=document.getElementById("days").value;
     let mydata = {};
     await axios.get("http://localhost:5000/mystatus?"+
-    "credit_card="+credit_card+
-    "&zhengzhuang="+zhengzhuang+
-    "&family="+family+
-    "&xiong="+xiong+
-    "&days"+days).then(function(response) {
+    "Credit_card="+credit_card+
+    "&Cough="+zhengzhuang+
+    "&Chest_Pain="+xiong+
+    "&Fever="+days).then(function(response) {
+      mydata = response.data;
+    }).catch(function (error){
+      console.log(error);
+    });
+    this.setState(mydata);
+ }
+
+ onClickConfirmed= async() => {
+    let credit_card=document.getElementById("formInlineName").value;
+    let zhengzhuang=document.getElementById("zhengzhuang").checked;
+    let xiong=document.getElementById("xiong").checked;
+    let days=document.getElementById("days").value;
+    let mydata = {};
+    await axios.get("http://localhost:5000/newConfirmed?"+
+    "Credit_card="+credit_card+
+    "&Cough="+zhengzhuang+
+    "&Chest_Pain="+xiong+
+    "&Fever="+days).then(function(response) {
       mydata = response.data;
     }).catch(function (error){
       console.log(error);
@@ -34,35 +50,33 @@ class MyForm extends React.Component {
         <div>
         <Form horizontal>
             <FormGroup>
-                <ControlLabel>信用卡信息</ControlLabel>
+                <ControlLabel>Credit Card</ControlLabel>
                 {' '}
                 <FormControl id="formInlineName" type="text"/>
             </FormGroup>  
             <ControlLabel>症状</ControlLabel>
             <FormGroup>   
                 <Checkbox id="zhengzhuang">
-                咳嗽
-                </Checkbox>
-            </FormGroup>  
-            <FormGroup>   
-                <Checkbox id="family">
-                家人感染
+                Cough
                 </Checkbox>
             </FormGroup>  
             <FormGroup>   
                 <Checkbox id="xiong">
-                胸痛
+                Chest
                 </Checkbox>
             </FormGroup>  
             <FormGroup>   
                 <InputGroup>
-                发烧？天
+                fever？days
                 <FormControl id="days" type="text" />
                 </InputGroup>    
             </FormGroup>  
             <FormGroup>
                 <Button onClick={this.onClick}>
-                提交
+                Submit
+                </Button>
+                <Button onClick={this.onClickConfirmed}>
+                New Confirmed
                 </Button>
             </FormGroup>
         </Form>
