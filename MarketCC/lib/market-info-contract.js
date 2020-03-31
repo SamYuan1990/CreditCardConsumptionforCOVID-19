@@ -33,13 +33,15 @@ class MarketInfoContract extends Contract {
         }
     }
 
-    async createTradeInfo(ctx,flightNo,flightInfo){
-        const buffer = Buffer.from(flightInfo);
-        console.log('create flight info '+buffer);
-        await ctx.stub.putState(flightNo, buffer);
+    async createTradeInfo(ctx,MarketID,Credit_Card,Date){
+        let data = {};
+        data.ID=MarketID;
+        data.Credit_Card=Credit_Card;
+        data.Date=Date;
+        await ctx.stub.putState(MarketID+'_'+Credit_Card,Buffer.from(JSON.stringify(data)));
     }
 
-    async SearchRecentMarket(ctx,personID,day){
+    async SearchRecentMarket(ctx,personID){
         let Markets = [];
         let results = [];
         let date = new Date();
@@ -47,7 +49,7 @@ class MarketInfoContract extends Contract {
         let i;
         let queryday;
         let queryString;
-        for (i=0;i<day;i++){
+        for (i=0;i<14;i++){
             queryString = {};
             queryString.selector = {};
             queryString.selector.Credit_Card = personID;
@@ -66,26 +68,6 @@ class MarketInfoContract extends Contract {
             Markets[i] = results[i].ID;
         }
         return JSON.stringify(Markets);
-    }
-
-    async GetCreditCards(ctx,flightID){
-        let results =[];
-        let Credit_Cards = [];
-        let queryString = {};
-        let i;
-        queryString.selector = {};
-        queryString.selector.ID = flightID;
-        console.log('query '+ JSON.stringify(queryString));
-        const iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
-        if(!iterator){
-            return JSON.stringify(results);
-        }
-        console.log('find data'+iterator);
-        results = await this.getAllResults(iterator);
-        for(i=0;i<results.length;i++){
-            Credit_Cards[i] = results[i].Credit_Card;
-        }
-        return JSON.stringify(Credit_Cards);
     }
 }
 
