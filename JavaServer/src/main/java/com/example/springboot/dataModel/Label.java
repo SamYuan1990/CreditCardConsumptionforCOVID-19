@@ -1,4 +1,4 @@
-package com.example.springboot;
+package com.example.springboot.dataModel;
 
 public class Label{
     public String label;

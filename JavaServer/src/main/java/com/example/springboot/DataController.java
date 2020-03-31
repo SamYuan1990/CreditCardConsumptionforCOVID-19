@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.example.springboot.dataModel.Bar;
+import com.example.springboot.dataModel.Data;
+import com.example.springboot.dataModel.Label;
 import com.example.springboot.util.utils;
 
 import com.google.gson.Gson;
