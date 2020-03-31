@@ -123,4 +123,52 @@ public class utils {
 
 		return payload;
 	}
+
+	public static String Query(String chaincodeName,String fcn,String... arguments) {
+		String payload="";
+		try {
+			ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName)
+					.setVersion("1.0")
+					.build();
+
+			/*
+			* QueryByChaincodeRequest queryByChaincodeRequest = client.newQueryProposalRequest();
+                    queryByChaincodeRequest.setArgs("b");
+                    queryByChaincodeRequest.setFcn("query");
+                    queryByChaincodeRequest.setChaincodeID(chaincodeID);
+
+                    Map<String, byte[]> tm2 = new HashMap<>();
+                    tm2.put("HyperLedgerFabric", "QueryByChaincodeRequest:JavaSDK".getBytes(UTF_8));
+                    tm2.put("method", "QueryByChaincodeRequest".getBytes(UTF_8));
+                    queryByChaincodeRequest.setTransientMap(tm2);
+
+                    // Try each peer in turn just to confirm the request object can be reused
+                    for (Peer peer : channel.getPeers()) {
+                        Collection<ProposalResponse> queryProposals = channel.queryByChaincode(queryByChaincodeRequest
+			* */
+			QueryByChaincodeRequest transactionProposalRequest = hfclient.newQueryProposalRequest();
+			transactionProposalRequest.setChaincodeID(chaincodeID);
+			transactionProposalRequest.setFcn(fcn);
+			transactionProposalRequest.setArgs(arguments);
+			transactionProposalRequest.setProposalWaitTime(500);
+			transactionProposalRequest.setUserContext(appuser);
+
+			Collection<ProposalResponse> queryPropResp = mychannel.queryByChaincode(transactionProposalRequest);
+			for(ProposalResponse response:queryPropResp) {
+				if (response.getStatus() == ChaincodeResponse.Status.SUCCESS) {
+					//System.out.printf("Successful transaction proposal response Txid: %s from peer %s\n", response.getTransactionID(), response.getPeer().getName());
+					//System.out.println("response :"+response);
+					//System.out.println("response msg :"+response.getMessage());
+					payload = response.getProposalResponse().getResponse().getPayload().toStringUtf8();
+					//System.out.println(payload);
+				}
+			}
+			//mychannel.queryByChaincode(queryPropResp);
+
+		} catch (Exception e) {
+			System.out.printf(e.toString());
+		}
+
+		return payload;
+	}
 }

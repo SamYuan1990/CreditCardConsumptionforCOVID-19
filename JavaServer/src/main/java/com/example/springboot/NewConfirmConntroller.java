@@ -47,8 +47,8 @@ public class NewConfirmConntroller {
 
 	private void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
 		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_Card,cough,chest_pain,fever,date,status);
-		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_Card);
-		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
+		String RecentLocations = utils.Query(utils.MarketCC,"SearchRecentMarket",credit_Card);
+		String curentLocations = utils.Query(utils.HospitalCC,"getLocations");
 		Gson gson = new Gson();
 		String[] currentobject = gson.fromJson(curentLocations, String[].class);
 		String[] Recentobject = gson.fromJson(RecentLocations,String[].class);

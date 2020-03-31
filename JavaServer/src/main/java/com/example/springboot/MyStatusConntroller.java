@@ -13,7 +13,8 @@
 
 package com.example.springboot;
 
-import com.example.springboot.util.HttpClientTest;
+import com.example.springboot.dataModel.Status;
+import com.example.springboot.util.AIClient;
 import com.example.springboot.util.utils;
 
 import com.google.gson.Gson;
@@ -80,7 +81,7 @@ public class MyStatusConntroller{
 		}
 		String rs = "";
 		try {
-			rs = HttpClientTest.ReqsetTOAI(credit_card,Cough,Chest_pain,fever,shareSpace);
+			rs = AIClient.ReqsetTOAI(credit_card,Cough,Chest_pain,fever,shareSpace);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -89,9 +90,9 @@ public class MyStatusConntroller{
 	}
 
 	private static String getShareSpaceInfo(String Credit_card) {
-		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",Credit_card);
+		String RecentLocations = utils.Query(utils.MarketCC,"SearchRecentMarket",Credit_card);
 		System.out.println(RecentLocations);
-		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
+		String curentLocations = utils.Query(utils.HospitalCC,"getLocations");
 		Gson gson = new Gson();
 		String[] currentobject = gson.fromJson(curentLocations, String[].class);
 		String[] RecentLocation = gson.fromJson(RecentLocations, String[].class);
