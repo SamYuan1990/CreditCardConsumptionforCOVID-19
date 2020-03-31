@@ -74,12 +74,12 @@ describe('HospitalInfoContract', () => {
     describe('#Update Location', ()=>{
 
         it('should create a location info', async () => {
-            await contract.UpdateLocation(ctx,'["L0002"]');
+            await contract.UpdateLocation(ctx,JSON.stringify('["L0002"]'));
             ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify('["L0002"]')));
         });
 
         it('should create another location info', async () => {
-            await contract.UpdateLocation(ctx,'["L0001"]');
+            await contract.UpdateLocation(ctx,JSON.stringify('["L0001"]'));
             ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify('["L0001"]')));
         });
     });

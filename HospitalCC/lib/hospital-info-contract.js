@@ -34,8 +34,7 @@ class HospitalInfoContract extends Contract {
     }
 
     async UpdateLocation(ctx,location){
-        const buffer = Buffer.from(JSON.stringify(location));
-        await ctx.stub.putState('location', buffer);
+        await ctx.stub.putState('location', Buffer.from(location));
     }
 
     async createConfirmed(ctx,credit_card,cough,chest_pain,fever,date,status){
@@ -54,6 +53,8 @@ class HospitalInfoContract extends Contract {
 
     async getLocations(ctx){
         let marbleAsbytes = await ctx.stub.getState('location'); //get the marble from chaincode state
+        console.log('location:'+marbleAsbytes);
+        console.log('location:'+marbleAsbytes.toString());
         return marbleAsbytes.toString();
     }
 
