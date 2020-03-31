@@ -18,9 +18,9 @@ public class utils {
 
     public static String config_network_path = "./src/main/resources/Networkconfig.json";
     public static String config_user_path = "./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore";
-	public static String success = "success";
-	public static String warn = "warning";
-	public static String danger = "danger";
+	public static String success = "success";//Success
+	public static String warn = "warning";//Warning
+	public static String danger = "danger";//Danger
 	public static String HospitalCC ="HospitalCC";
 	public static String MarketCC="MarketCC";
 	public static HFClient hfclient = HFClient.createNewInstance();

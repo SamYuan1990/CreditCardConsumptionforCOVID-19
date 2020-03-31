@@ -13,6 +13,7 @@
 
 package com.example.springboot;
 
+import com.example.springboot.util.HttpClientTest;
 import com.example.springboot.util.utils;
 
 import com.google.gson.Gson;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletRequest;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -68,7 +70,22 @@ public class MyStatusConntroller{
 	}
 
 	private String getstatusFromAI(String credit_card, String cough, String chest_pain, String fever, String shareSpace) {
-		return "success";
+		String Cough="No";
+		if (cough.equals("true")){
+			Cough="Yes";
+		}
+		String Chest_pain="No";
+		if (chest_pain.equals("true")){
+			Chest_pain="Yes";
+		}
+		String rs = "";
+		try {
+			rs = HttpClientTest.ReqsetTOAI(credit_card,Cough,Chest_pain,fever,shareSpace);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return rs.toLowerCase();
 	}
 
 	private static String getShareSpaceInfo(String Credit_card) {
@@ -78,12 +95,12 @@ public class MyStatusConntroller{
 		Gson gson = new Gson();
 		String[] currentobject = gson.fromJson(curentLocations, String[].class);
 		String[] RecentLocation = gson.fromJson(RecentLocations, String[].class);
-		String payload="false";
+		String payload="No";
 		if(currentobject!=null) {
 			for (String s : currentobject) {
 				for (String i : RecentLocation) {
 					if (s.equals(i)) {
-						payload = "true";
+						payload = "Yes";
 						break;
 					}
 				}
