@@ -66,14 +66,14 @@ describe('MarketInfoContract', () => {
     describe('#Create New flight Info', ()=>{
 
         it('should create a flight info', async () => {
-            await contract.createTradeInfo(ctx,'M001','C0001','2020-03-30');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('M001_C0001',Buffer.from('{"ID":"M001","Credit_Card":"C0001","Date":"2020-03-30"}'));
+            await contract.createTradeInfo(ctx,'M001','NYC','C0001','2020-03-30','13:00');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('M001_NYC_C0001',Buffer.from('{"Branch":"M001","City":"NYC","Credit_Card":"C0001","Date":"2020-03-30","Time":"13:00"}'));
         });
 
 
         it('should create a flight info for another', async () => {
-            await contract.createTradeInfo(ctx,'M001','C0002','2020-03-30');
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('M001_C0002',Buffer.from('{"ID":"M001","Credit_Card":"C0002","Date":"2020-03-30"}'));
+            await contract.createTradeInfo(ctx,'M001','NYC','C0002','2020-03-30','17:00');
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('M001_NYC_C0002',Buffer.from('{"Branch":"M001","City":"NYC","Credit_Card":"C0002","Date":"2020-03-30","Time":"17:00"}'));
         });
     });
 
@@ -85,9 +85,9 @@ describe('MarketInfoContract', () => {
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
-                    Buffer.from('{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0001"}')
+                    Buffer.from('{"Branch":"M001","City":"NYC","Credit_Card":"C0001","Date":"2020-03-30","Time":"13:00"}')
                 ]));
-            await contract.SearchRecentMarket(ctx,'C0001').should.eventually.deep.equal(JSON.stringify(['M001']));
+            await contract.SearchRecentMarket(ctx,'C0001').should.eventually.deep.equal(JSON.stringify([{Branch:'M001',City:'NYC'}]));
         });
 
         it('should return many', async () => {
@@ -97,8 +97,8 @@ describe('MarketInfoContract', () => {
             queryString.selector.Date = new Date().toFormat('YYYY-MM-DD');
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString)).resolves(
                 createIterator([
-                    Buffer.from('{"ID":"M001","Date":"2020-03-25","Credit_Card":"C0001"}'),
-                    Buffer.from('{"ID":"M002","Date":"2020-03-25","Credit_Card":"C0001"}')
+                    Buffer.from('{"Branch":"M001","City":"NYC","Credit_Card":"C0001","Date":"2020-03-30","Time":"13:00"}'),
+                    Buffer.from('{"Branch":"M002","City":"WA","Credit_Card":"C0001","Date":"2020-03-30","Time":"13:00"}')
                 ]));
             let queryString2 = {};
             queryString2.selector = {};
@@ -106,9 +106,9 @@ describe('MarketInfoContract', () => {
             queryString2.selector.Date = new Date(new Date().setDate(new Date().getDate() - 1)).toFormat('YYYY-MM-DD');
             ctx.stub.getQueryResult.withArgs(JSON.stringify(queryString2)).resolves(
                 createIterator([
-                    Buffer.from('{"ID":"M003","Date":"2020-03-25","Credit_Card":"C0001"}')
+                    Buffer.from('{"Branch":"M003","City":"CA","Credit_Card":"C0001","Date":"2020-03-30","Time":"13:00"}')
                 ]));
-            await contract.SearchRecentMarket(ctx,'C0001').should.eventually.deep.equal(JSON.stringify(['M001','M002','M003']));
+            await contract.SearchRecentMarket(ctx,'C0001').should.eventually.deep.equal(JSON.stringify([{Branch:'M001',City:'NYC'},{Branch:'M002',City:'WA'},{Branch:'M003',City:'CA'}]));
         });
 
         it('Not found',async () => {

@@ -33,12 +33,14 @@ class MarketInfoContract extends Contract {
         }
     }
 
-    async createTradeInfo(ctx,MarketID,Credit_Card,Date){
+    async createTradeInfo(ctx,MarketID,City,Credit_Card,Date,Time){
         let data = {};
-        data.ID=MarketID;
+        data.Branch=MarketID;
+        data.City=City;
         data.Credit_Card=Credit_Card;
         data.Date=Date;
-        await ctx.stub.putState(MarketID+'_'+Credit_Card,Buffer.from(JSON.stringify(data)));
+        data.Time=Time;
+        await ctx.stub.putState(MarketID+'_'+City+'_'+Credit_Card,Buffer.from(JSON.stringify(data)));
     }
 
     async SearchRecentMarket(ctx,personID){
@@ -65,7 +67,9 @@ class MarketInfoContract extends Contract {
             date.setDate(date.getDate()-1);
         }
         for(i=0;i<results.length;i++){
-            Markets[i] = results[i].ID;
+            Markets[i] = {};
+            Markets[i].Branch=results[i].Branch;
+            Markets[i].City=results[i].City;
         }
         return JSON.stringify(Markets);
     }

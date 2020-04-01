@@ -11,6 +11,10 @@ require('date-utils');
 */
 class HospitalInfoContract extends Contract {
 
+    async init(ctx){
+        await ctx.stub.putState('location',Buffer.from(JSON.stringify([])));
+    }
+
     async getAllResults(iterator, getKeys) {
         const allResults = [];
         let loop = true;
@@ -55,7 +59,7 @@ class HospitalInfoContract extends Contract {
         let marbleAsbytes = await ctx.stub.getState('location'); //get the marble from chaincode state
         console.log('location:'+marbleAsbytes);
         console.log('location:'+marbleAsbytes.toString());
-        return JSON.stringify(['M0001','M0003']);
+        return marbleAsbytes.toString();
     }
 
 

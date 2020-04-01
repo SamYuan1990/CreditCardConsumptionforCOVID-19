@@ -63,25 +63,25 @@ public class DataController{
 		res.range = range;
 		Bar[] barRed= new Bar[recents];
 		Date d1 = new Date();
-		for(int i=0;i<recents;i++){
+		for(int i=1;i<recents+1;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barRed[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.danger,i));
+			barRed[i-1]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.danger,i));
 			d1=yesterday(d1);
 		}
 		res.BarRed=barRed;
 		Bar[] barYellow= new Bar[recents];
 		d1 = new Date();
-		for(int i=0;i<recents;i++){
+		for(int i=1;i<recents+1;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barYellow[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.warn,i));
+			barYellow[i-1]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.warn,i));
 			d1=yesterday(d1);
 		}
 		res.BarYellow=barYellow;
 		Bar[] barGreen = new Bar[recents];
 		d1 = new Date();
-		for(int i=0;i<recents;i++){
+		for(int i=1;i<recents+1;i++){
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			barGreen[i]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.success,i));
+			barGreen[i-1]=new Bar(sdf.format(d1),GetTotalNumberByStatusAndDate(utils.success,i));
 			d1=yesterday(d1);
 		}
 		res.BarGreen=barGreen;
@@ -98,7 +98,7 @@ public class DataController{
 	private static int GetTotalNumberByStatusAndDate(String status, int i) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String payload = utils.Query(utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
-		System.out.println(payload);
+		System.out.println("queryByStatusDate :"+payload);
 		Gson gson = new Gson();
 		String[] object = gson.fromJson(payload, String[].class);
 		return object.length;
