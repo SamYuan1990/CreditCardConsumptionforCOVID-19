@@ -13,6 +13,7 @@
 
 package com.example.springboot;
 
+import com.example.springboot.dataModel.MarketInfo;
 import com.example.springboot.dataModel.Status;
 import com.example.springboot.util.AIClient;
 import com.example.springboot.util.utils;
@@ -94,12 +95,12 @@ public class MyStatusConntroller{
 		System.out.println(RecentLocations);
 		String curentLocations = utils.Query(utils.HospitalCC,"getLocations");
 		Gson gson = new Gson();
-		String[] currentobject = gson.fromJson(curentLocations, String[].class);
-		String[] RecentLocation = gson.fromJson(RecentLocations, String[].class);
+		MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
+		MarketInfo[] RecentLocation = gson.fromJson(RecentLocations, MarketInfo[].class);
 		String payload="No";
 		if(currentobject!=null) {
-			for (String s : currentobject) {
-				for (String i : RecentLocation) {
+			for (MarketInfo s : currentobject) {
+				for (MarketInfo i : RecentLocation) {
 					if (s.equals(i)) {
 						payload = "Yes";
 						break;

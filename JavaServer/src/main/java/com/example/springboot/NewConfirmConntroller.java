@@ -13,6 +13,7 @@
 
 package com.example.springboot;
 
+import com.example.springboot.dataModel.MarketInfo;
 import com.example.springboot.util.utils;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,33 +43,40 @@ public class NewConfirmConntroller {
 		Date d =new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Confirmed(Credit_Card,Cough,Chest_pain,Fever,sdf.format(d),status);
-		return "success";
+		return utils.danger;
 	}
 
 	private void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
 		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_Card,cough,chest_pain,fever,date,status);
-		String RecentLocations = utils.Query(utils.MarketCC,"SearchRecentMarket",credit_Card);
-		String curentLocations = utils.Query(utils.HospitalCC,"getLocations");
+		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_Card);
+		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
+		System.out.println("Current in blokchain:"+curentLocations);
 		Gson gson = new Gson();
-		String[] currentobject = gson.fromJson(curentLocations, String[].class);
-		String[] Recentobject = gson.fromJson(RecentLocations,String[].class);
-		Set<String> set = new TreeSet<String>();
-		for (String s:currentobject) {
-			if(s!=null) {
-				System.out.println("add 2:"+s);
-				set.add(s);
+		MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
+		MarketInfo[] Recentobject = gson.fromJson(RecentLocations,MarketInfo[].class);
+		Set<MarketInfo> set = new TreeSet<MarketInfo>();
+		if(currentobject!=null) {
+			for (MarketInfo s : currentobject) {
+				if (s != null) {
+					System.out.println("add from current object:" + s);
+					set.add(s);
+				}
 			}
 		}
-		for (String s:Recentobject) {
-			if(s!=null) {
-				System.out.println("add:"+s);
-				set.add(s);
+		if(Recentobject!=null) {
+			for (MarketInfo s : Recentobject) {
+				if (s != null) {
+					System.out.println("add from Market:" + s);
+					set.add(s);
+				}
 			}
 		}
-		String[] mergeRS = new String[set.size()];
-		for(String s:set){
-			System.out.println("Get:"+s);
-			mergeRS[mergeRS.length-1] = s;
+		MarketInfo[] mergeRS = new MarketInfo[set.size()];
+		int i=0 ;
+		for(MarketInfo s:set){
+			System.out.println("Get: "+s);
+			mergeRS[i] = s;
+			i++;
 		}
 		System.out.println("recent Market for "+credit_Card + " is "+RecentLocations);
 		System.out.println(gson.toJson(mergeRS));
