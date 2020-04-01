@@ -66,16 +66,16 @@ describe('HospitalInfoContract', () => {
     describe('#getLocations Location', ()=>{
 
         it('should get a location info', async () => {
-            ctx.stub.getState.withArgs('location').resolves(Buffer.from(JSON.stringify('["L0002"]')));
-            await contract.getLocations(ctx).should.eventually.deep.equal(JSON.stringify(['M0001','M0003']));
+            ctx.stub.getState.withArgs('location').resolves(Buffer.from(JSON.stringify([{Branch:'M001',City:'NYC'},{Branch:'M002',City:'WA'}])));
+            await contract.getLocations(ctx).should.eventually.deep.equal(JSON.stringify([{Branch:'M001',City:'NYC'},{Branch:'M002',City:'WA'}]));
         });
     });
 
     describe('#Update Location', ()=>{
 
         it('should create a location info', async () => {
-            await contract.UpdateLocation(ctx,JSON.stringify('["L0002"]'));
-            ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify('["L0002"]')));
+            await contract.UpdateLocation(ctx,JSON.stringify([{Branch:'M001',City:'NYC'},{Branch:'M002',City:'WA'}]));
+            ctx.stub.putState.should.have.been.calledOnceWithExactly('location',Buffer.from(JSON.stringify([{Branch:'M001',City:'NYC'},{Branch:'M002',City:'WA'}])));
         });
 
         it('should create another location info', async () => {
