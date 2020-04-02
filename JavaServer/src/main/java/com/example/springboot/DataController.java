@@ -23,6 +23,7 @@ import com.example.springboot.dataModel.Label;
 import com.example.springboot.util.utils;
 
 import com.google.gson.Gson;
+import org.hyperledger.fabric.sdk.Channel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -89,19 +90,38 @@ public class DataController{
 	}
 
 	private static int GetTotalNumberByStatus(String status) {
-		String payload = utils.Query(utils.HospitalCC,"queryByStatus",status);
+		Channel mychannel = null;
+		try {
+			mychannel = utils.mychannelPool.borrowObject();
+
+
+		String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatus",status);
 		Gson gson = new Gson();
 		String[] object = gson.fromJson(payload, String[].class);
+		utils.mychannelPool.returnObject(mychannel);
+
 		return object.length;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	private static int GetTotalNumberByStatusAndDate(String status, int i) {
+		Channel mychannel = null;
+		try {
+			mychannel = utils.mychannelPool.borrowObject();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String payload = utils.Query(utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
+		String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
 		System.out.println("queryByStatusDate :"+payload);
 		Gson gson = new Gson();
 		String[] object = gson.fromJson(payload, String[].class);
-		return object.length;
+			utils.mychannelPool.returnObject(mychannel);
+			return object.length;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	public Date yesterday(Date today) {
