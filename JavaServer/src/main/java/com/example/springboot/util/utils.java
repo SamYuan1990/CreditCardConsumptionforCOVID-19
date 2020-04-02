@@ -32,7 +32,12 @@ public class utils {
 	public static HFClient hfclient = HFClient.createNewInstance();
  	public static User appuser = null;
 	//public static Channel mychannel = null;
-	public static ObjectPool<Channel> mychannelPool = new GenericObjectPool<>(new MyChannelBuilderFactory());
+	public static GenericObjectPoolConfig myGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
+	public static ObjectPool<Channel> mychannelPool = new GenericObjectPool<Channel>(new MyChannelBuilderFactory(),myGenericObjectPoolConfig);
+
+	public static void Init() {
+		myGenericObjectPoolConfig.setTestOnBorrow(true);
+	}
 
 	private static class MyChannelBuilderFactory  extends BasePooledObjectFactory<Channel> {
 		@Override

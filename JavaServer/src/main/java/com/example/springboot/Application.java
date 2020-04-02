@@ -28,7 +28,7 @@ public class Application {
 				System.out.println(beanName);
 			}
 			//utils.InitUser();
-			//utils.Init();
+			utils.Init();
 		};
 	}
 
