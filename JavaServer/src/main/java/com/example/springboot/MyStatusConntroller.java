@@ -19,6 +19,7 @@ import com.example.springboot.util.AIClient;
 import com.example.springboot.util.utils;
 
 import com.google.gson.Gson;
+import org.hyperledger.fabric.sdk.Channel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,9 +68,15 @@ public class MyStatusConntroller{
 		return res;
 	}
 
-	private void RecordToChain(String credit_card, String cough, String chest_pain, String fever,String date, String status) {
-		utils.Invoke(utils.HospitalCC,"createPatientInfo",credit_card,cough,chest_pain,fever,date,status);
-	}
+	public static void RecordToChain(String credit_card, String cough, String chest_pain, String fever,String date, String status) {
+		Channel mychannel = null;
+		try {
+			mychannel = utils.mychannelPool.borrowObject();
+			utils.Invoke(mychannel,utils.HospitalCC,"createPatientInfo",credit_card,cough,chest_pain,fever,date,status);
+			utils.mychannelPool.returnObject(mychannel);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	}
 
 	private String getstatusFromAI(String credit_card, String cough, String chest_pain, String fever, String shareSpace) {
 		String Cough="No";
@@ -91,23 +98,33 @@ public class MyStatusConntroller{
 	}
 
 	private static String getShareSpaceInfo(String Credit_card) {
-		String RecentLocations = utils.Query(utils.MarketCC,"SearchRecentMarket",Credit_card);
-		System.out.println(RecentLocations);
-		String curentLocations = utils.Query(utils.HospitalCC,"getLocations");
-		Gson gson = new Gson();
-		MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
-		MarketInfo[] RecentLocation = gson.fromJson(RecentLocations, MarketInfo[].class);
-		String payload="No";
-		if(currentobject!=null) {
-			for (MarketInfo s : currentobject) {
-				for (MarketInfo i : RecentLocation) {
-					if (s.equals(i)) {
-						payload = "Yes";
-						break;
+		Channel mychannel = null;
+		try {
+			mychannel = utils.mychannelPool.borrowObject();
+
+			String RecentLocations = utils.Query(mychannel, utils.MarketCC, "SearchRecentMarket", Credit_card);
+			System.out.println(RecentLocations);
+			String curentLocations = utils.Query(mychannel, utils.HospitalCC, "getLocations");
+			Gson gson = new Gson();
+			MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
+			MarketInfo[] RecentLocation = gson.fromJson(RecentLocations, MarketInfo[].class);
+			String payload = "No";
+			if (currentobject != null) {
+				for (MarketInfo s : currentobject) {
+					for (MarketInfo i : RecentLocation) {
+						if (s.equals(i)) {
+							payload = "Yes";
+							break;
+						}
 					}
 				}
 			}
+			utils.mychannelPool.returnObject(mychannel);
+			return payload;
 		}
-		return payload;
-	}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+		}
 }

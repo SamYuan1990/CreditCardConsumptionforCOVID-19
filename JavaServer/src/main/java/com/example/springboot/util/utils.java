@@ -3,6 +3,12 @@ import java.nio.file.Paths;
 
 import com.google.protobuf.ByteString;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.hyperledger.fabric.sdk.NetworkConfig;
 import org.hyperledger.fabric.sdk.*;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
@@ -25,8 +31,63 @@ public class utils {
 	public static String MarketCC="MarketCC";
 	public static HFClient hfclient = HFClient.createNewInstance();
  	public static User appuser = null;
-	public static Channel mychannel = null;
+	//public static Channel mychannel = null;
+	public static GenericObjectPoolConfig myGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
+	public static ObjectPool<Channel> mychannelPool = new GenericObjectPool<Channel>(new MyChannelBuilderFactory(),myGenericObjectPoolConfig);
 
+	public static void Init() {
+		myGenericObjectPoolConfig.setTestOnBorrow(true);
+	}
+
+	private static class MyChannelBuilderFactory  extends BasePooledObjectFactory<Channel> {
+		@Override
+		public Channel create() throws Exception {
+			Channel mychannel = null;
+			try {
+				CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
+				hfclient.setCryptoSuite(cryptoSuite);
+				File tempFile = File.createTempFile("teststore", "properties");
+				tempFile.deleteOnExit();
+
+				File sampleStoreFile = new File(System.getProperty("user.home") + "/test.properties");
+				if (sampleStoreFile.exists()) { //For testing start fresh
+					sampleStoreFile.delete();
+				}
+				final SampleStore sampleStore = new SampleStore(sampleStoreFile);
+				appuser = sampleStore.getMember("peer1", "Org1", "Org1MSP",
+						new File(String.valueOf(utils.findFileSk(Paths.get(utils.config_user_path).toFile()))),
+						new File("./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"));
+				NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);
+
+				hfclient.setUserContext(appuser);
+				hfclient.loadChannelFromConfig("mychannel", networkConfig);
+				System.out.println(networkConfig.getPeerNames());
+				mychannel = hfclient.getChannel("mychannel");
+				mychannel.initialize();
+			} catch (Exception e) {
+				System.out.println(e.toString());
+			}
+			return mychannel;
+		}
+
+		@Override
+		public PooledObject<Channel> wrap(Channel obj) {
+			// 将对象包装成池对象
+			return new DefaultPooledObject<>(obj);
+		}
+		// ③ 反初始化每次回收的时候都会执行这个方法
+		@Override
+		public void passivateObject(PooledObject<Channel> pooledObject) {
+
+		}
+
+		@Override
+		public boolean validateObject(final PooledObject<Channel> pooledObject) {
+			Channel pooledObj = pooledObject.getObject();
+			return pooledObj.isInitialized() & !pooledObj.isShutdown();
+		}
+
+	}
 
 
 	public static ArrayList<ByteString> x509Header = new ArrayList<ByteString>();
@@ -56,42 +117,7 @@ public class utils {
         return null;
     }
 
-	public static void InitUser(){
-    	try {
-			CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
-			hfclient.setCryptoSuite(cryptoSuite);
-			File tempFile = File.createTempFile("teststore", "properties");
-			tempFile.deleteOnExit();
-
-			File sampleStoreFile = new File(System.getProperty("user.home") + "/test.properties");
-			if (sampleStoreFile.exists()) { //For testing start fresh
-				sampleStoreFile.delete();
-			}
-			final SampleStore sampleStore = new SampleStore(sampleStoreFile);
-			appuser = sampleStore.getMember("peer1", "Org1", "Org1MSP",
-					new File(String.valueOf(utils.findFileSk(Paths.get(utils.config_user_path).toFile()))),
-					new File("./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"));
-
-		}catch (Exception e){
-    		System.out.println(e.toString());
-		}
-	}
-
-    public static void Init(){
-		try {
-		NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);
-
-		hfclient.setUserContext(appuser);
-		hfclient.loadChannelFromConfig("mychannel", networkConfig);
-		System.out.println(networkConfig.getPeerNames());
-		mychannel = hfclient.getChannel("mychannel");
-		mychannel.initialize();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-	}
-
-    public static String Invoke(String chaincodeName,String fcn,String... arguments) {
+    public static String Invoke(Channel mychannel,String chaincodeName,String fcn,String... arguments) {
 		String payload="";
 		try {
 			ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName)
@@ -116,7 +142,6 @@ public class utils {
 			}
 
 			mychannel.sendTransaction(invokePropResp);
-
 		} catch (Exception e) {
 			System.out.printf(e.toString());
 		}
@@ -124,7 +149,7 @@ public class utils {
 		return payload;
 	}
 
-	public static String Query(String chaincodeName,String fcn,String... arguments) {
+	public static String Query(Channel mychannel,String chaincodeName,String fcn,String... arguments) {
 		String payload="";
 		try {
 			ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName)
@@ -164,7 +189,6 @@ public class utils {
 				}
 			}
 			//mychannel.queryByChaincode(queryPropResp);
-
 		} catch (Exception e) {
 			System.out.printf(e.toString());
 		}

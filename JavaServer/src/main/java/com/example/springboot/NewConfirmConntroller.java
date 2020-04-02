@@ -16,6 +16,7 @@ package com.example.springboot;
 import com.example.springboot.dataModel.MarketInfo;
 import com.example.springboot.util.utils;
 import com.google.gson.Gson;
+import org.hyperledger.fabric.sdk.Channel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,52 +35,59 @@ public class NewConfirmConntroller {
 	private static int need_id = 1;
 
 	@RequestMapping("/newConfirmed")
-	public Object index(ServletRequest req){
-		String Credit_Card=req.getParameter("Credit_card");
-		String Cough=req.getParameter("Cough");
-		String Chest_pain=req.getParameter("Chest_Pain");
-		String Fever=req.getParameter("Fever");
+	public Object index(ServletRequest req) {
+		String Credit_Card = req.getParameter("Credit_card");
+		String Cough = req.getParameter("Cough");
+		String Chest_pain = req.getParameter("Chest_Pain");
+		String Fever = req.getParameter("Fever");
 		String status = utils.danger;
-		Date d =new Date();
+		Date d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Confirmed(Credit_Card,Cough,Chest_pain,Fever,sdf.format(d),status);
+		Confirmed(Credit_Card, Cough, Chest_pain, Fever, sdf.format(d), status);
 		return utils.danger;
 	}
 
-	private void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
-		utils.Invoke(utils.HospitalCC,"createConfirmed",credit_Card,cough,chest_pain,fever,date,status);
-		String RecentLocations = utils.Invoke(utils.MarketCC,"SearchRecentMarket",credit_Card);
-		String curentLocations = utils.Invoke(utils.HospitalCC,"getLocations");
-		System.out.println("Current in blokchain:"+curentLocations);
-		Gson gson = new Gson();
-		MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
-		MarketInfo[] Recentobject = gson.fromJson(RecentLocations,MarketInfo[].class);
-		Set<MarketInfo> set = new TreeSet<MarketInfo>();
-		if(currentobject!=null) {
-			for (MarketInfo s : currentobject) {
-				if (s != null) {
-					System.out.println("add from current object:" + s);
-					set.add(s);
+	public static void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
+		Channel mychannel = null;
+		try {
+			mychannel = utils.mychannelPool.borrowObject();
+			utils.Invoke(mychannel, utils.HospitalCC, "createConfirmed", credit_Card, cough, chest_pain, fever, date, status);
+			String RecentLocations = utils.Invoke(mychannel, utils.MarketCC, "SearchRecentMarket", credit_Card);
+			String curentLocations = utils.Invoke(mychannel, utils.HospitalCC, "getLocations");
+			System.out.println("Current in blokchain:" + curentLocations);
+			Gson gson = new Gson();
+			MarketInfo[] currentobject = gson.fromJson(curentLocations, MarketInfo[].class);
+			MarketInfo[] Recentobject = gson.fromJson(RecentLocations, MarketInfo[].class);
+			Set<MarketInfo> set = new TreeSet<MarketInfo>();
+			if (currentobject != null) {
+				for (MarketInfo s : currentobject) {
+					if (s != null) {
+						System.out.println("add from current object:" + s);
+						set.add(s);
+					}
 				}
 			}
-		}
-		if(Recentobject!=null) {
-			for (MarketInfo s : Recentobject) {
-				if (s != null) {
-					System.out.println("add from Market:" + s);
-					set.add(s);
+			if (Recentobject != null) {
+				for (MarketInfo s : Recentobject) {
+					if (s != null) {
+						System.out.println("add from Market:" + s);
+						set.add(s);
+					}
 				}
 			}
+			MarketInfo[] mergeRS = new MarketInfo[set.size()];
+			int i = 0;
+			for (MarketInfo s : set) {
+				System.out.println("Get: " + s);
+				mergeRS[i] = s;
+				i++;
+			}
+			System.out.println("recent Market for " + credit_Card + " is " + RecentLocations);
+			System.out.println(gson.toJson(mergeRS));
+			utils.Invoke(mychannel, utils.HospitalCC, "UpdateLocation", gson.toJson(mergeRS));
+			utils.mychannelPool.returnObject(mychannel);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		MarketInfo[] mergeRS = new MarketInfo[set.size()];
-		int i=0 ;
-		for(MarketInfo s:set){
-			System.out.println("Get: "+s);
-			mergeRS[i] = s;
-			i++;
-		}
-		System.out.println("recent Market for "+credit_Card + " is "+RecentLocations);
-		System.out.println(gson.toJson(mergeRS));
-		utils.Invoke(utils.HospitalCC,"UpdateLocation",gson.toJson(mergeRS));
 	}
 }
