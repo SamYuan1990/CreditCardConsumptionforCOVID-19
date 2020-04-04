@@ -10,10 +10,9 @@ jobs:
             - npm install
             - nohup npm start &
             - cd ../..
-            - cd webUI/my-app
+            - cd webUI/my-app-2.0
             - npm install
-            - export CI=true
-            - npm test
+            - npm run build
     - stage: TEST
       script: 
             - cd JavaServer
