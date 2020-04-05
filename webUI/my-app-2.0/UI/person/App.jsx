@@ -37,17 +37,34 @@ class App extends React.Component {
     }).catch(function (error){
       console.log(error);
     });*/
-    let covid19api={};
+    mydata=this.state;
+    fetch("http://localhost:5000/data").then(res => res.json()).then(
+      (result) => {
+        console.log(result);
+        mydata.dataArray = result.dataArray;
+        mydata.range = result.range;
+        mydata.BarRed=result.BarRed;
+        mydata.BarYellow=result.BarYellow
+        mydata.BarGreen=result.BarGreen;
+        this.setState(mydata);
+        //console.log(mydata);
+      },
+      (error) => {
+
+      }
+    );
+
+    let covid19api=this.state;
     fetch("https://api.covid19api.com/summary").then(res => res.json()).then(
       (result) => {
         console.log(result);
         var arrayLength = result.Countries.length;
         for (var i = 0; i < arrayLength; i++) {
-          console.log(result.Countries[i]);
-          covid19api[result.Countries[i].Country]=result.Countries[i].TotalConfirmed;
+          //console.log(result.Countries[i]);
+          covid19api.data[result.Countries[i].Country]=result.Countries[i].TotalConfirmed;
         }
-        mydata.data=covid19api;
-        this.setState(mydata);
+        //mydata.data=covid19api;
+        this.setState(covid19api);
       },
       (error) => {
 

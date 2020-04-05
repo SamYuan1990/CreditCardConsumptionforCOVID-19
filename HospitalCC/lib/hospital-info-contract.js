@@ -77,6 +77,10 @@ class HospitalInfoContract extends Contract {
         await ctx.stub.putState(credit_card, buffer);
     }
 
+    async getPatientInfo(ctx,credit_card){
+        return await ctx.stub.getState(credit_card);
+    }
+
     async queryByStatusDate(ctx,status,day){
         let People = [];
         let results = [];
