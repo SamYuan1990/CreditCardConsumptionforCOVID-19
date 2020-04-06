@@ -78,7 +78,8 @@ class HospitalInfoContract extends Contract {
     }
 
     async getPatientInfo(ctx,credit_card){
-        return await ctx.stub.getState(credit_card);
+        let marbleAsbytes =  await ctx.stub.getState(credit_card);
+        return marbleAsbytes.toString();
     }
 
     async queryByStatusDate(ctx,status,day){

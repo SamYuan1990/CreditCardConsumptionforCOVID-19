@@ -50,7 +50,7 @@ public class NewConfirmConntroller {
 	public static void Confirmed(String credit_Card, String cough, String chest_pain, String fever, String date, String status) {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
 			utils.Invoke(mychannel, utils.HospitalCC, "createConfirmed", credit_Card, cough, chest_pain, fever, date, status);
 			String RecentLocations = utils.Invoke(mychannel, utils.MarketCC, "SearchRecentMarket", credit_Card);
 			String curentLocations = utils.Invoke(mychannel, utils.HospitalCC, "getLocations");
@@ -85,7 +85,7 @@ public class NewConfirmConntroller {
 			System.out.println("recent Market for " + credit_Card + " is " + RecentLocations);
 			System.out.println(gson.toJson(mergeRS));
 			utils.Invoke(mychannel, utils.HospitalCC, "UpdateLocation", gson.toJson(mergeRS));
-			utils.mychannelPool.returnObject(mychannel);
+			//utils.mychannelPool.returnObject(mychannel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

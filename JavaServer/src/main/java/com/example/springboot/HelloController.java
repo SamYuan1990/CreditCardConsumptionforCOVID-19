@@ -84,9 +84,9 @@ public class HelloController {
 	private void initMarket(String market,String City, String credit_card, String d,String time){
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
 			utils.Invoke(mychannel,utils.MarketCC,"createTradeInfo",market,City,credit_card,d,time);
-			utils.mychannelPool.returnObject(mychannel);
+			//utils.mychannelPool.returnObject(mychannel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

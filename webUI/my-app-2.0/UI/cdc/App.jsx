@@ -47,6 +47,7 @@ class App extends React.Component {
         mydata.BarRed=result.BarRed;
         mydata.BarYellow=result.BarYellow
         mydata.BarGreen=result.BarGreen;
+        this.setState(mydata);
         //console.log(mydata);
       },
       (error) => {

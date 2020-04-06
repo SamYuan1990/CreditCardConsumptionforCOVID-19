@@ -20,13 +20,13 @@ public class HighRiskController {
 	public Object index() {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
 
 
 			String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatus",utils.danger);
 			Gson gson = new Gson();
 			String[] object = gson.fromJson(payload, String[].class);
-			utils.mychannelPool.returnObject(mychannel);
+			//utils.mychannelPool.returnObject(mychannel);
 
 			return payload;
 		} catch (Exception e) {
