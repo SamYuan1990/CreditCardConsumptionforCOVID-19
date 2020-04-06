@@ -20,24 +20,6 @@ import {
   LinkRadialLine
 } from '@vx/shape';
 
-const data = {
-  name: 'Person X',
-  children: [
-    {
-      name: 'Market A',
-      children: [
-        { name: 'Person A1' },
-        { name: 'Person A2' },
-        { name: 'Person A3' },        
-      ]
-    },
-    { name: 'Cough' },
-    {
-      name: 'Market B',
-      children: [{ name: 'Person B1' }, { name: 'Person B2' }]
-    }
-  ]
-};
 
 export default class Mytree extends React.Component {
   
@@ -47,7 +29,7 @@ export default class Mytree extends React.Component {
             layout: 'polar',
             orientation: 'horizontal',
             linkType: 'step',
-            stepPercent: 0.5
+            stepPercent: 0.5,
         }
     };
 
@@ -144,7 +126,7 @@ export default class Mytree extends React.Component {
           <rect width={width} height={height} rx={14} fill="white" />
           <Group top={margin.top} left={margin.left}>
             <Tree
-              root={hierarchy(data, d => (d.isExpanded ? null : d.children))}
+              root={hierarchy(this.props.data, d => (d.isExpanded ? null : d.children))}
               size={[sizeWidth, sizeHeight]}
               separation={(a, b) => (a.parent == b.parent ? 1 : 0.5) / a.depth}
             >
