@@ -4,7 +4,7 @@ import Label from '../lib/Label.jsx';
 import MyForm from '../lib/Form.jsx';
 import MyPie from '../lib/Pies.jsx';
 import MyBars from '../lib/MyBarGroup.jsx';
-import MyTree from '../lib/MyTree.jsx';
+import CDCSpecial from "../lib/CDCSpecial.jsx";
 
 class App extends React.Component {
 
@@ -19,7 +19,7 @@ class App extends React.Component {
       usage: "33.3"}],
       BarRed: [{letter:"Mar-3",frequency:30},{letter:"Mar-4",frequency:20},{letter:"Mar-5",frequency:10}],
       BarYellow: [{letter:"Mar-3",frequency:10},{letter:"Mar-4",frequency:20},{letter:"Mar-5",frequency:10}],
-      BarGreen: [{letter:"Mar-3",frequency:10},{letter:"Mar-4",frequency:20},{letter:"Mar-5",frequency:30}]
+      BarGreen: [{letter:"Mar-3",frequency:10},{letter:"Mar-4",frequency:20},{letter:"Mar-5",frequency:30}],
     };
 
     this.update = this.update.bind(this);
@@ -38,17 +38,36 @@ class App extends React.Component {
     }).catch(function (error){
       console.log(error);
     });*/
-    let covid19api={};
+    mydata=this.state;
+    fetch("http://localhost:5000/data").then(res => res.json()).then(
+      (result) => {
+        console.log(result);
+        mydata.dataArray = result.dataArray;
+        mydata.range = result.range;
+        mydata.BarRed=result.BarRed;
+        mydata.BarYellow=result.BarYellow
+        mydata.BarGreen=result.BarGreen;
+        this.setState(mydata);
+        //console.log(mydata);
+      },
+      (error) => {
+
+      }
+    );
+
+    
+
+    let covid19api=this.state;
     fetch("https://api.covid19api.com/summary").then(res => res.json()).then(
       (result) => {
         console.log(result);
         var arrayLength = result.Countries.length;
         for (var i = 0; i < arrayLength; i++) {
-          console.log(result.Countries[i]);
-          covid19api[result.Countries[i].Country]=result.Countries[i].TotalConfirmed;
+          //console.log(result.Countries[i]);
+          covid19api.data[result.Countries[i].Country]=result.Countries[i].TotalConfirmed;
         }
-        mydata.data=covid19api;
-        this.setState(mydata);
+        //mydata.data=covid19api;
+        this.setState(covid19api);
       },
       (error) => {
 
@@ -100,18 +119,7 @@ class App extends React.Component {
             </div>
         </div>
       </div>
-      <div class="pure-g">
-      <div class="pure-u-2-5">
-        <h1> List of people who my need ..</h1>
-        <button class="pure-button">Person X</button>
-        <br/>
-        <button class="pure-button">Person Y</button>
-      </div>
-      <div class="pure-u-3-5">
-        <h1> Possible reason for he/she need check</h1>
-        <MyTree width={1200} height={800}/>
-      </div>
-      </div>
+      <CDCSpecial/>
     </div>
   )
   }

@@ -77,6 +77,11 @@ class HospitalInfoContract extends Contract {
         await ctx.stub.putState(credit_card, buffer);
     }
 
+    async getPatientInfo(ctx,credit_card){
+        let marbleAsbytes =  await ctx.stub.getState(credit_card);
+        return marbleAsbytes.toString();
+    }
+
     async queryByStatusDate(ctx,status,day){
         let People = [];
         let results = [];
@@ -120,6 +125,23 @@ class HospitalInfoContract extends Contract {
             return JSON.stringify(results);
         }
         console.log('find data'+iterator);
+        results = await this.getAllResults(iterator);
+        for(i=0;i<results.length;i++){
+            People[i] = results[i].credit_card;
+        }
+        return JSON.stringify(People);
+    }
+
+    async getAllConfirmed(ctx){
+        let People = [];
+        let results =[];
+        let queryString = {};
+        let i;
+        queryString.confirmed='true';
+        const iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
+        if(!iterator){
+            return JSON.stringify(results);
+        }
         results = await this.getAllResults(iterator);
         for(i=0;i<results.length;i++){
             People[i] = results[i].credit_card;

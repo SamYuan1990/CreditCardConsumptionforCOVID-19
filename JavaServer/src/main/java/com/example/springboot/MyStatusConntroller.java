@@ -71,9 +71,9 @@ public class MyStatusConntroller{
 	public static void RecordToChain(String credit_card, String cough, String chest_pain, String fever,String date, String status) {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
 			utils.Invoke(mychannel,utils.HospitalCC,"createPatientInfo",credit_card,cough,chest_pain,fever,date,status);
-			utils.mychannelPool.returnObject(mychannel);
+			//utils.mychannelPool.returnObject(mychannel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	}
@@ -100,7 +100,7 @@ public class MyStatusConntroller{
 	private static String getShareSpaceInfo(String Credit_card) {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
 
 			String RecentLocations = utils.Query(mychannel, utils.MarketCC, "SearchRecentMarket", Credit_card);
 			System.out.println(RecentLocations);
@@ -119,7 +119,7 @@ public class MyStatusConntroller{
 					}
 				}
 			}
-			utils.mychannelPool.returnObject(mychannel);
+			//utils.mychannelPool.returnObject(mychannel);
 			return payload;
 		}
 		catch(Exception e){

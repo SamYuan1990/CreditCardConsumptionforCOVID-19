@@ -31,12 +31,36 @@ public class utils {
 	public static String MarketCC="MarketCC";
 	public static HFClient hfclient = HFClient.createNewInstance();
  	public static User appuser = null;
-	//public static Channel mychannel = null;
+	public static Channel mychannel = null;
 	public static GenericObjectPoolConfig myGenericObjectPoolConfig = new GenericObjectPoolConfig<>();
 	public static ObjectPool<Channel> mychannelPool = new GenericObjectPool<Channel>(new MyChannelBuilderFactory(),myGenericObjectPoolConfig);
 
 	public static void Init() {
 		myGenericObjectPoolConfig.setTestOnBorrow(true);
+		try {
+			CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
+			hfclient.setCryptoSuite(cryptoSuite);
+			File tempFile = File.createTempFile("teststore", "properties");
+			tempFile.deleteOnExit();
+
+			File sampleStoreFile = new File(System.getProperty("user.home") + "/test.properties");
+			if (sampleStoreFile.exists()) { //For testing start fresh
+				sampleStoreFile.delete();
+			}
+			final SampleStore sampleStore = new SampleStore(sampleStoreFile);
+			appuser = sampleStore.getMember("peer1", "Org1", "Org1MSP",
+					new File(String.valueOf(utils.findFileSk(Paths.get(utils.config_user_path).toFile()))),
+					new File("./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"));
+			NetworkConfig networkConfig = utils.loadConfig(utils.config_network_path);
+
+			hfclient.setUserContext(appuser);
+			hfclient.loadChannelFromConfig("mychannel", networkConfig);
+			System.out.println(networkConfig.getPeerNames());
+			mychannel = hfclient.getChannel("mychannel");
+			mychannel.initialize();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	private static class MyChannelBuilderFactory  extends BasePooledObjectFactory<Channel> {
@@ -127,7 +151,7 @@ public class utils {
 			transactionProposalRequest.setChaincodeID(chaincodeID);
 			transactionProposalRequest.setFcn(fcn);
 			transactionProposalRequest.setArgs(arguments);
-			transactionProposalRequest.setProposalWaitTime(500);
+			//transactionProposalRequest.setProposalWaitTime(500);
 			transactionProposalRequest.setUserContext(appuser);
 
 			Collection<ProposalResponse> invokePropResp = mychannel.sendTransactionProposal(transactionProposalRequest);
@@ -155,35 +179,16 @@ public class utils {
 			ChaincodeID chaincodeID = ChaincodeID.newBuilder().setName(chaincodeName)
 					.setVersion("1.0")
 					.build();
-
-			/*
-			* QueryByChaincodeRequest queryByChaincodeRequest = client.newQueryProposalRequest();
-                    queryByChaincodeRequest.setArgs("b");
-                    queryByChaincodeRequest.setFcn("query");
-                    queryByChaincodeRequest.setChaincodeID(chaincodeID);
-
-                    Map<String, byte[]> tm2 = new HashMap<>();
-                    tm2.put("HyperLedgerFabric", "QueryByChaincodeRequest:JavaSDK".getBytes(UTF_8));
-                    tm2.put("method", "QueryByChaincodeRequest".getBytes(UTF_8));
-                    queryByChaincodeRequest.setTransientMap(tm2);
-
-                    // Try each peer in turn just to confirm the request object can be reused
-                    for (Peer peer : channel.getPeers()) {
-                        Collection<ProposalResponse> queryProposals = channel.queryByChaincode(queryByChaincodeRequest
-			* */
 			QueryByChaincodeRequest transactionProposalRequest = hfclient.newQueryProposalRequest();
 			transactionProposalRequest.setChaincodeID(chaincodeID);
 			transactionProposalRequest.setFcn(fcn);
 			transactionProposalRequest.setArgs(arguments);
-			transactionProposalRequest.setProposalWaitTime(500);
+			//transactionProposalRequest.setProposalWaitTime(500);
 			transactionProposalRequest.setUserContext(appuser);
 
 			Collection<ProposalResponse> queryPropResp = mychannel.queryByChaincode(transactionProposalRequest);
 			for(ProposalResponse response:queryPropResp) {
 				if (response.getStatus() == ChaincodeResponse.Status.SUCCESS) {
-					//System.out.printf("Successful transaction proposal response Txid: %s from peer %s\n", response.getTransactionID(), response.getPeer().getName());
-					//System.out.println("response :"+response);
-					//System.out.println("response msg :"+response.getMessage());
 					payload = response.getProposalResponse().getResponse().getPayload().toStringUtf8();
 					//System.out.println(payload);
 				}

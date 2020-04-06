@@ -73,6 +73,24 @@ class MarketInfoContract extends Contract {
         }
         return JSON.stringify(Markets);
     }
+
+    async SearchRecentPeople(ctx,city,marketID){
+        let People=[];
+        let queryString={};
+        let results=[];
+        let iterator;
+        queryString.City=city;
+        queryString.Branch=marketID;
+        let i =0;
+        iterator = await ctx.stub.getQueryResult(JSON.stringify(queryString));
+        if(!iterator){
+            return People;
+        }
+        results=results.concat(await this.getAllResults(iterator));
+        for(i=0;i<results.length;i++){
+            People[i] = results.Credit_Card;
+        }
+    }
 }
 
 module.exports = MarketInfoContract;

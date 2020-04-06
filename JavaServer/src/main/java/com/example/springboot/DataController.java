@@ -92,15 +92,12 @@ public class DataController{
 	private static int GetTotalNumberByStatus(String status) {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
-
-
-		String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatus",status);
-		Gson gson = new Gson();
-		String[] object = gson.fromJson(payload, String[].class);
-		utils.mychannelPool.returnObject(mychannel);
-
-		return object.length;
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
+			String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatus",status);
+			Gson gson = new Gson();
+			String[] object = gson.fromJson(payload, String[].class);
+			//utils.mychannelPool.returnObject(mychannel);
+			return object.length;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -110,13 +107,13 @@ public class DataController{
 	private static int GetTotalNumberByStatusAndDate(String status, int i) {
 		Channel mychannel = null;
 		try {
-			mychannel = utils.mychannelPool.borrowObject();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
-		System.out.println("queryByStatusDate :"+payload);
-		Gson gson = new Gson();
-		String[] object = gson.fromJson(payload, String[].class);
-			utils.mychannelPool.returnObject(mychannel);
+			mychannel = utils.mychannel;//utils.mychannelPool.borrowObject();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String payload = utils.Query(mychannel,utils.HospitalCC,"queryByStatusDate",status,Integer.valueOf(i).toString());
+			System.out.println("queryByStatusDate :"+payload);
+			Gson gson = new Gson();
+			String[] object = gson.fromJson(payload, String[].class);
+			//utils.mychannelPool.returnObject(mychannel);
 			return object.length;
 		} catch (Exception e) {
 			e.printStackTrace();
