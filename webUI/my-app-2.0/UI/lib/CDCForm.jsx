@@ -46,16 +46,21 @@ onClickConfirmed(event){
     let xiong=document.getElementById("xiong").checked;
     let days=document.getElementById("days").value;
     let mydata = {};
-    axios.get("http://localhost:5000/newConfirmed?"+
+
+    fetch("http://localhost:5000/newConfirmed?"+
     "Credit_card="+credit_card+
     "&Cough="+zhengzhuang+
     "&Chest_Pain="+xiong+
-    "&Fever="+days).then(function(response) {
-      mydata = response.data;
-    }).catch(function (error){
-      console.log(error);
-    });
-    this.setState(mydata);
+    "&Fever="+days).then(res => res.json()).then(
+      (result) => {
+        console.log(result);
+        mydata = result;
+        this.setState(mydata);
+      },
+      (error) => {
+
+      }
+    );
  }
 
  render() {

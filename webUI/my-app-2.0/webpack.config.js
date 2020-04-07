@@ -10,7 +10,8 @@ let devConfig = {
     entry: {
         person: ['./UI/person', hotMiddlewareScript],
         cdc: ['./UI/cdc', hotMiddlewareScript],
-        index: ['./UI/index', hotMiddlewareScript]
+        index: ['./UI/index', hotMiddlewareScript],
+        hospital: ['./UI/hospital', hotMiddlewareScript]
     },
     output: {
         filename: './[name]/bundle.js',

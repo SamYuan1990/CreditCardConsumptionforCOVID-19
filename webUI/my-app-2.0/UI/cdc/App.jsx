@@ -85,28 +85,53 @@ class App extends React.Component {
     });*/
   }
 
-  render() {
-  return (
-    <div id="layout" class="pure-g">
-        <div class="sidebar pure-u-1-4 pure-u-md-1-4">
-            <MyForm/>
-      </div>
-      <div class="content pure-u-3-4 pure-u-md-3-4">
+/*
+ <div class="content pure-u-3-4 pure-u-md-3-4">
         <div class="pure-g">
           <div class="pure-u-2-5">
-            <p>My area</p>
-            <p>Red as new confirm,Yellow as new maybe,Green as new cure</p>
+            <p>Area</p>
             <GEOGraph height={300} width={600} dataArray={this.state.dataArray} data={this.state.data}/>
             <div className="Label">
                   <Label dataArray={this.state.dataArray}/>
             </div>
           </div>
           <div class="pure-u-2-5">
-              <p>Percent in my area</p>
+              <p>Precent</p>
               <MyPie width={300} height={300} data={this.state.range}/>
             </div>
             <div class="pure-u-1-5">
-                <p>Trends in my area</p>
+                <p>Tends</p>
+                <div class="pure-u-1-3">
+                  <MyBars width={100} height={300} data={this.state.BarRed} color={"red"}/>
+                </div>
+                <div class="pure-u-1-3">
+                  <MyBars width={100} height={300} data={this.state.BarYellow} color={"yellow"}/>
+                </div>
+                <div class="pure-u-1-3">
+                  <MyBars width={100} height={300} data={this.state.BarGreen} color={"green"}/>
+                </div>
+            </div>
+        </div>
+      </div> */
+
+  render() {
+  return (
+    <div id="layout" class="pure-g">
+      <div class="content pure-u-3-4 pure-u-md-3-4">
+        <div class="pure-g">
+          <div class="pure-u-2-5">
+            <p>Area</p>
+            <GEOGraph height={300} width={600} dataArray={this.state.dataArray} data={this.state.data}/>
+            <div className="Label">
+                  <Label dataArray={this.state.dataArray}/>
+            </div>
+          </div>
+          <div class="pure-u-2-5">
+              <p>Precent</p>
+              <MyPie width={300} height={300} data={this.state.range}/>
+            </div>
+            <div class="pure-u-1-5">
+                <p>Tends</p>
                 <div class="pure-u-1-3">
                   <MyBars width={100} height={300} data={this.state.BarRed} color={"red"}/>
                 </div>

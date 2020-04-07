@@ -8,5 +8,6 @@ module.exports = function (app) {
     app.use('/', require('./homepage'));
     app.use('/cdc', require('./cdc'));
     app.use('/person', require('./person'));
+    app.use('/hospital',require('./hospital'));
 
 };

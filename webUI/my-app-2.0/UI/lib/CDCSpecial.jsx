@@ -32,10 +32,11 @@ export default class CDCSpecial extends React.Component {
     }
 
     onClick(event){
+        //console.log(event.target.innerText);
         let myState={};
         myState=this.state;
         //myState.Selected=event.target.value;
-        fetch("http://localhost:5000/getPeople?Credit_card="+event.target.value).then(res => res.json()).then(
+        fetch("http://localhost:5000/getPeople?Credit_card="+event.target.innerText).then(res => res.json()).then(
             (result) => {
                   myState.Selected_data=result;
                   this.setState(myState);
@@ -65,16 +66,21 @@ export default class CDCSpecial extends React.Component {
         }
     }
     //<For of={this.state.HighRisk} as={item => <button class="pure-button" value={item}>{item}</button> />
+    //<h4 class="email-subject">
     render() {
         return(
             <div class="pure-g">
-                <div class="pure-u-2-5">
-                <h1> List of people who my need ..</h1>
-                <For of={this.state.HighRisk} as={item => <div><button class="pure-button" value={item} onClick={this.onClick}>{item}</button><br/></div>} />
+                <div class="pure-u-2-5 ">
+                <h4 class="email-subject email-item"> List of people who may need ..</h4>
+                <For of={this.state.HighRisk} as={item => <div class="email-item-unread"><h4 class="email-subject email-item" value={item} onClick={this.onClick}>{item}</h4><br/></div>} />
                 </div>
                 <div class="pure-u-3-5">
-                <h1> Possible reason for he/she need check</h1>
-                <MyTree width={1200} height={800} data={this.state.Selected_data}/>
+                    <div class="email-content-header">
+                        <h1 class="email-content-title"> Possible reason for he/she need check</h1>
+                    </div>
+                    <div class="email-content-body">
+                        <MyTree width={1200} height={800} data={this.state.Selected_data}/>
+                    </div>
                 </div>
             </div>
         )
