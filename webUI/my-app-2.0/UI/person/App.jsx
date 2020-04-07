@@ -86,25 +86,31 @@ class App extends React.Component {
   return (
     <div id="layout" class="pure-g">
         <div class="sidebar pure-u-1-4 pure-u-md-1-4">
+          <h1 class="brand-title">Input Your health Info here</h1>
             <MyForm/>
       </div>
       <div class="content pure-u-3-4 pure-u-md-3-4">
         <div class="pure-g">
-          <div class="pure-u-1">
-            <p>My area</p>
-            <p>Red as new confirm,Yellow as new maybe,Green as new cure</p>
+          <div class="pure-u-1 content-subhead">
+            <h2 class="post-title">My area status</h2>
+            <div class="post-description">
+            <p class="post-meta">Red as new confirm,Yellow as new maybe,Green as new cure</p>
             <GEOGraph height={300} width={600} dataArray={this.state.dataArray} data={this.state.data}/>
             <div className="Label">
                   <Label dataArray={this.state.dataArray}/>
             </div>
+            </div>
           </div>
-          <div class="pure-u-1">
+          <div class="pure-u-1 content-subhead">
             <div class="pure-u-2-5">
-              <p>Percent in my area</p>
-              <MyPie width={300} height={300} data={this.state.range}/>
+              <h2 class="post-title">Precent</h2>
+              <div class="post-description">
+                <MyPie width={300} height={300} data={this.state.range}/>
+              </div>
             </div>
             <div class="pure-u-3-5">
-                <p>Trends in my area</p>
+              <h2 class="post-title">Tends</h2>
+              <div class="post-description">
                 <div class="pure-u-1-5">
                   <MyBars width={100} height={300} data={this.state.BarRed} color={"red"}/>
                 </div>
@@ -114,6 +120,7 @@ class App extends React.Component {
                 <div class="pure-u-1-5">
                   <MyBars width={100} height={300} data={this.state.BarGreen} color={"green"}/>
                 </div>
+              </div>
             </div>
           </div>
         </div>

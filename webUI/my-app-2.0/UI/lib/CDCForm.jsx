@@ -1,6 +1,7 @@
 
 import React from 'react';
 import {Form,FormGroup,ControlLabel,Checkbox,ListGroup,FormControl,InputGroup,Button,ListGroupItem} from 'react-bootstrap';
+import axios from 'axios';
 
 export default class MyForm extends React.Component {
 
@@ -10,6 +11,7 @@ export default class MyForm extends React.Component {
      status:"info"
     };
     this.onClick = this.onClick.bind(this);
+    this.onClickConfirmed = this.onClickConfirmed.bind(this);
   }
 
   // <button type="submit" class="pure-button pure-button-primary" onClick={this.onClick}>Submit</button>
@@ -36,6 +38,24 @@ onClick(event){
 
       }
     );
+ }
+
+onClickConfirmed(event){
+    let credit_card=document.getElementById("formInlineName").value;
+    let zhengzhuang=document.getElementById("zhengzhuang").checked;
+    let xiong=document.getElementById("xiong").checked;
+    let days=document.getElementById("days").value;
+    let mydata = {};
+    axios.get("http://localhost:5000/newConfirmed?"+
+    "Credit_card="+credit_card+
+    "&Cough="+zhengzhuang+
+    "&Chest_Pain="+xiong+
+    "&Fever="+days).then(function(response) {
+      mydata = response.data;
+    }).catch(function (error){
+      console.log(error);
+    });
+    this.setState(mydata);
  }
 
  render() {
@@ -69,6 +89,9 @@ onClick(event){
                         <ul class="nav-list">
                             <li class="nav-item">
                                 <a class="pure-button" onClick={this.onClick}>Submit</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="pure-button" onClick={this.onClickConfirmed}>New Comfirmed</a>
                             </li>
                         </ul>
                     </nav>
