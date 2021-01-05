@@ -28,7 +28,7 @@
         "@vx/mock-data": "0.0.195",
         "@vx/scale": "0.0.195",
         "@vx/shape": "0.0.195",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "babel-loader": "^8.0.5",
         "babel-preset-es2015": "^6.24.1",
         "body-parser": "^1.18.3",
